@@ -1,0 +1,68 @@
+import { useState } from 'react';
+
+function CadastroAluno() {
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [nascimento, setNascimento] = useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const dadosDoAluno = {
+      nome,
+      cpf,
+      telefone,
+      data_nascimento: nascimento
+    };
+
+    try {
+      const resposta = await fetch('http://localhost:3000/alunos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosDoAluno)
+      });
+
+      if (resposta.ok) {
+        alert('✅ Aluno cadastrado com sucesso!');
+        setNome('');
+        setCpf('');
+        setTelefone('');
+        setNascimento('');
+      } else {
+        alert('❌ Erro ao cadastrar. O servidor respondeu com erro.');
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert('❌ Erro de conexão. O Backend (porta 3000) está ligado?');
+    }
+  }
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto', fontFamily: 'Arial' }}>
+      <h2>Novo Aluno</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        
+        <label>Nome:</label>
+        <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
+
+        <label>CPF:</label>
+        <input type="text" value={cpf} onChange={(e) => setCpf(e.target.value)} required />
+
+        <label>Telefone:</label>
+        <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+
+        <label>Data de Nascimento:</label>
+        <input type="date" value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
+
+        <button type="submit" style={{ marginTop: '10px', padding: '10px', background: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
+          Salvar Aluno
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default CadastroAluno;
