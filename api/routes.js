@@ -2,84 +2,115 @@ const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
 
-
-
-// Lembre-se: O process.env precisa do pacote 'dotenv' configurado no index.js
+// Configuração do Banco de Dados
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// --- ROTA DE LOGIN ---
+// =========================================
+// ROTA DE LOGIN (Autenticação)
+// =========================================
 router.post('/login', async (req, res) => {
-    console.log("✅ ENTREI NA ROTA DE LOGIN!"); // <--- ADICIONE ISSO AQUI
-    console.log("Dados recebidos:", req.body);
+    console.log("✅ TENTATIVA DE LOGIN RECEBIDA");
     const { email, senha } = req.body;
+
     try {
+        // Busca o usuário pelo email (aqui precisamos da senha para conferir)
         const query = 'SELECT * FROM usuarios WHERE email = $1';
         const resultado = await pool.query(query, [email]);
-
-        // CORREÇÃO 1: Pegar de 'resultado', não de 'usuario'
         const usuario = resultado.rows[0];
 
-        // CORREÇÃO 2: Verificar se usuário existe ANTES de checar a senha
+        // 1. Verifica se o usuário existe e se a senha bate
         if (!usuario || usuario.senha !== senha) {
             return res.status(401).json({ erro: 'Email ou senha incorretos' });
         }
 
-        // CORREÇÃO 3: 'true' é minúsculo em JS
+        // 2. Verifica se o cadastro foi aprovado pelo Admin
         if (usuario.aprovado !== true) {
             return res.status(403).json({ erro: 'Seu cadastro ainda está em análise pelo Admin.' });
         }
 
-        res.json({ mensagem: 'Login aceito', usuario: { email: usuario.email, id: usuario.id } });
+        // Sucesso: Retorna dados básicos (sem a senha)
+        res.json({ 
+            mensagem: 'Login aceito', 
+            usuario: { 
+                id: usuario.id, 
+                nome: usuario.nome, 
+                email: usuario.email,
+                tipo: usuario.tipo 
+            } 
+        });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro interno' });
+        console.error("Erro no login:", error);
+        res.status(500).json({ erro: 'Erro interno no servidor' });
     }
 });
 
-// --- ROTA DE REGISTRO ---
+// =========================================
+// ROTA DE REGISTRO (Criar Conta)
+// =========================================
 router.post('/registrar', async (req, res) => {
     const { nome, email, senha } = req.body;
-    const tipo = 'professor';
+    const tipo = 'professor'; // Padrão para novos cadastros
+
     try {
-        // CORREÇÃO 4: 'RETURNING' escrito corretamente
         const query = 'INSERT INTO usuarios (nome, email, senha, tipo) VALUES($1, $2, $3, $4) RETURNING id, nome, email, aprovado';
-        
-        // CORREÇÃO 5: Sintaxe correta -> pool.query(string, [array])
         const resultado = await pool.query(query, [nome, email, senha, tipo]);
 
         res.status(201).json(resultado.rows[0]);
+
     } catch (error) {
-        console.log(error);
-        // CÓDIGO DE DUPLICIDADE (Email já existe)
+        console.error("Erro no registro:", error);
+        // Código de erro do Postgres para "Violação de Unicidade" (Email duplicado)
         if (error.code === '23505') {
-            // CORREÇÃO 6: É res.status, não res.resultado
             return res.status(400).json({ erro: 'Email já cadastrado!' });
         }
-        res.status(500).json({ erro: 'Erro ao tentar cadastrar um usuário!' });
+        res.status(500).json({ erro: 'Erro ao tentar cadastrar usuário!' });
     }
 });
 
-// --- LISTAR ALUNOS ---
+// =========================================
+// ROTA DE LISTAR USUÁRIOS 
+// =========================================
+router.get('/usuarios', async (req, res) => {
+    try {
+        // ATENÇÃO: Selecionamos colunas específicas para NÃO retornar a senha
+        // Filtramos por 'professor' para listar quem se cadastrou no sistema
+        const query = `
+            SELECT id, nome, email, tipo, aprovado 
+            FROM usuarios 
+            WHERE tipo = 'professor' 
+            ORDER BY nome
+        `;
+        
+        const resultado = await pool.query(query);
+        res.json(resultado.rows);
+
+    } catch (error) {
+        console.error("Erro ao listar usuários:", error);
+        res.status(500).json({ erro: 'Erro ao buscar lista de usuários' });
+    }
+});
+
+// =========================================
+// ROTAS DE ALUNOS
+// =========================================
 router.get('/alunos', async (req, res) => {
     try {
         const resultado = await pool.query("SELECT * FROM alunos ORDER BY nome");
         res.json(resultado.rows);
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao buscar alunos:", error);
         res.status(500).json({ erro: 'Erro ao buscar alunos' });
     }
 });
 
-// --- CADASTRAR ALUNO ---
 router.post('/alunos', async (req, res) => {
-    // CORREÇÃO 7: É req.body (request), não res.body (response)
-    const { nome, cpf, data_nascimento, telefone, plano_id} = req.body;
+    const { nome, cpf, data_nascimento, telefone, plano_id } = req.body;
 
     try {
-        // CORREÇÃO 8: SQL completo com VALUES e RETURNING
         const query = `
             INSERT INTO alunos (nome, cpf, data_nascimento, telefone, plano_id) 
             VALUES ($1, $2, $3, $4, $5) 
@@ -89,35 +120,47 @@ router.post('/alunos', async (req, res) => {
 
         const resultado = await pool.query(query, values);
         res.status(201).json(resultado.rows[0]);
-    } catch (error) { // CORREÇÃO 9: Declarar o (error)
-        console.error(error);
+
+    } catch (error) {
+        console.error("Erro ao cadastrar aluno:", error);
         res.status(500).json({ erro: 'Erro ao cadastrar aluno.' });
     }
 });
 
-// router.get('/usuarios', async (res, req) => {
-//     try {
-//         const resultado = await pool.query('SELECT * FROM usu')
-//     }
-// });
-
+// =========================================
+// ROTAS DE PLANOS
+// =========================================
 router.get('/planos', async (req, res) => {
     try {
         const resultado = await pool.query('SELECT * FROM planos WHERE ativo = true ORDER BY valor_mensal ASC');
         res.json(resultado.rows);
     } catch (error){
-        console.error(error);
+        console.error("Erro ao buscar planos:", error);
         res.status(500).json({erro : 'Erro ao buscar planos!'});
     }
 });
 
 router.post('/planos', async(req, res) =>{
-    const {nome, valor_mensal, qtde_aulas_mensal} = req.body;
+    // Padronizei a variável para qtde_aulas_semana (comum em Pilates: 1x, 2x, 3x na semana)
+    // O campo 'ativo' agora vem do body ou assume true por padrão se não vier
+    const { nome, valor_mensal, qtde_aulas_semana, ativo } = req.body;
+    
+    // Se 'ativo' não for enviado, define como true
+    const statusAtivo = (ativo !== undefined) ? ativo : true;
+
     try{
-        const query = 'INSERT into planos (nome, valor_mensal, qtde_aulas_semana, ativo VALUES ($1, $2, $3, $4) RETURNING *';
-        const resultado = await pool.query(query, [nome, valor_mensal, qtde_aulas_semana]);
+        // CORRIGIDO: Adicionado parêntese que faltava antes do VALUES
+        const query = `
+            INSERT INTO planos (nome, valor_mensal, qtde_aulas_semana, ativo) 
+            VALUES ($1, $2, $3, $4) 
+            RETURNING *
+        `;
+        
+        const resultado = await pool.query(query, [nome, valor_mensal, qtde_aulas_semana, statusAtivo]);
         res.status(201).json(resultado.rows[0]);
+
     } catch(error){
+        console.error("Erro ao criar plano:", error);
         res.status(500).json({erro: 'Erro ao tentar criar novo plano!'})
     }
 });

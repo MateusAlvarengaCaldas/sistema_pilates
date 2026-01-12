@@ -8,24 +8,33 @@ function CadastroAluno() {
   const [nascimento, setNascimento] = useState('');
   const [plano, setPlano] = useState('');
   const [listaPlanos, setListaPlanos] = useState([]);
+  const [professor, setProfessor] = useState('');
+  const [listaProfessor, setProfessores] = useState([]);
 
 useEffect(() =>{
-    async function buscarPlanos(){
-      try{
-        const resposta = await fetch('http://127.0.0.1:3000/planos');
+async function buscarPlanos() {
+      try {
+        const resposta = await fetch('http://localhost:3000/planos');
         const dados = await resposta.json();
-        
-        // --- ADICIONE ESSAS 2 LINHAS AQUI 👇 ---
-        console.log("📦 O QUE CHEGOU DO BACKEND:", dados);
-        console.log("É um array?", Array.isArray(dados));
-        // ---------------------------------------
-
         setListaPlanos(dados);
-      }catch(error){
+      } catch (error) {
         console.error("Erro ao buscar planos:", error);
       }
-    } buscarPlanos();
+    }
+    async function buscarProfessores() {
+      try{
+        const resposta = await fetch('http://localhost:3000/planos');
+        const dados = await resposta.json();
+        setProfessores(dados)
+      } catch(error) {
+        console.error("Erro ao buscar professores:", error);
+      }
+      
+    }
+    buscarPlanos();
+    buscarProfessores();
   }, []);
+  
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -34,14 +43,18 @@ useEffect(() =>{
       alert("Por favor, selecione um plano!");
       return;
     }
+    
 
     const dadosDoAluno = {
       nome,
       cpf,
       telefone,
       data_nascimento: nascimento,
-      plano_id: plano
+      plano_id: plano,
+      professor_id: professor
     };
+
+    console.log("Enviando:", dadosDoAluno);
 
     try {
       const resposta = await fetch('http://localhost:3000/alunos', {
@@ -92,6 +105,15 @@ useEffect(() =>{
             {item.nome} - R$ {item.valor_mensal}
           </option>
         ))}
+        </select>
+
+        <label>Professor:</label>
+        <select value={professor}onChange={(e) => setProfessor(e.target)}style={{padding: '8px'}}>
+          <option value="">Selecio um professor...</option>
+          {listaProfessor?.length > 0 && listaProfessor.map((prof) => (
+            <option key={prof.id} value={prof.id}>
+            </option>
+          ))}
         </select>
 
         <button type="submit" style={{ marginTop: '10px', padding: '10px', background: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
