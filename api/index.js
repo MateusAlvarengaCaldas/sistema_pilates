@@ -1,49 +1,26 @@
-// console.log('--- DIAGNÓSTICO ---');
-// console.log('Estou rodando na pasta:', process.cwd());
-// const fs = require('fs');
-// try {
-//     const arquivos = fs.readdirSync('.');
-//     console.log('Arquivos que eu vejo aqui:', arquivos);
-// } catch (e) {
-//     console.log('Erro ao ler pasta');
-// }
-// console.log('-------------------');
-
-// ... aqui continua seu require('dotenv')...
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg');
+const routes = require('./routes'); // Importando o arquivo de rotas
 
 const app = express();
+
 app.use(express.json());
-app.use(cors()); // <--- AQUI ERA O ERRO (Corrigido)
+app.use(cors());
 
-// Configuração do Banco
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+// --- ESPIÃO (Middleware de Log) ---
+// Isso vai mostrar no terminal QUALQUER pedido que chegar
+app.use((req, res, next) => {
+    console.log(`👀 RECEBI UM PEDIDO: ${req.method} na rota ${req.url}`);
+    next(); // Passa para o próximo passo
 });
 
-// --- O QUE FALTAVA (O Teste e o Start) ---
+// Usando as rotas
+app.use('/', routes);
 
-// 1. Rota de teste (pra ver no navegador)
-app.get('/', (req, res) => {
-    res.send('API do Studio de Pilates está rodando!');
-});
-
-// 2. Testar conexão com o banco (pra ver no terminal)
-pool.connect((err) => {
-    if (err) {
-        console.error('ERRO ao conectar no banco:', err);
-    } else {
-        console.log('SUCESSO: Conectado ao Banco de Dados!');
-    }
-});
-
-// 3. Ligar o servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+const port = 3000;
+// O '0.0.0.0' é o segredo aqui 👇
+app.listen(port, '0.0.0.0', () => {
+    console.log(`🔥 Servidor rodando na porta ${port}`);
+    console.log(`🌐 Acesse por: http://127.0.0.1:${port}/login`);
 });

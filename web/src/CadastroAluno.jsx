@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 
 function CadastroAluno() {
@@ -5,15 +6,41 @@ function CadastroAluno() {
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
   const [nascimento, setNascimento] = useState('');
+  const [plano, setPlano] = useState('');
+  const [listaPlanos, setListaPlanos] = useState([]);
+
+useEffect(() =>{
+    async function buscarPlanos(){
+      try{
+        const resposta = await fetch('http://127.0.0.1:3000/planos');
+        const dados = await resposta.json();
+        
+        // --- ADICIONE ESSAS 2 LINHAS AQUI 👇 ---
+        console.log("📦 O QUE CHEGOU DO BACKEND:", dados);
+        console.log("É um array?", Array.isArray(dados));
+        // ---------------------------------------
+
+        setListaPlanos(dados);
+      }catch(error){
+        console.error("Erro ao buscar planos:", error);
+      }
+    } buscarPlanos();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if(!plano){
+      alert("Por favor, selecione um plano!");
+      return;
+    }
 
     const dadosDoAluno = {
       nome,
       cpf,
       telefone,
-      data_nascimento: nascimento
+      data_nascimento: nascimento,
+      plano_id: plano
     };
 
     try {
@@ -56,6 +83,16 @@ function CadastroAluno() {
 
         <label>Data de Nascimento:</label>
         <input type="date" value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
+
+        <label>Plano:</label>
+        <select value={plano}onChange={(e) => setPlano(e.target.value)}style={{ padding: '8px'}}>
+        <option value="">Selecione um plano...</option>
+        {listaPlanos?.length > 0 && listaPlanos.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.nome} - R$ {item.valor_mensal}
+          </option>
+        ))}
+        </select>
 
         <button type="submit" style={{ marginTop: '10px', padding: '10px', background: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
           Salvar Aluno
