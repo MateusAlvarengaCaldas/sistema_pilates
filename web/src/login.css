@@ -1,0 +1,103 @@
+/* Container principal (Fundo cinza e centralizado) */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+}
+
+/* O cartão branco */
+.login-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px;
+}
+
+/* Título */
+.login-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black;
+}
+
+/* Formulário */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Labels (Textos acima dos inputs) */
+.input-label {
+    color: black;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Inputs (Caixas de texto) */
+.input-field {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white; /* Garante fundo branco */
+    color: black;            /* Garante texto preto */
+    font-size: 14px;
+}
+
+/* Botão de Enviar (Base) */
+.btn-submit {
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+/* Variação Azul (Cadastro) */
+.btn-submit.azul {
+    background-color: #007bff;
+}
+.btn-submit.azul:hover {
+    background-color: #0056b3;
+}
+
+/* Variação Verde (Login) */
+.btn-submit.verde {
+    background-color: #28a745;
+}
+.btn-submit.verde:hover {
+    background-color: #218838;
+}
+
+/* Linha divisória */
+.divider {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #ddd;
+}
+
+/* Botão de alternar (Link no rodapé) */
+.btn-toggle {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    width: 100%;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.btn-toggle:hover {
+    color: #0056b3;
+}

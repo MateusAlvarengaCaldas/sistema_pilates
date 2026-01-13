@@ -76,8 +76,6 @@ router.post('/registrar', async (req, res) => {
 // =========================================
 router.get('/usuarios', async (req, res) => {
     try {
-        // ATENÇÃO: Selecionamos colunas específicas para NÃO retornar a senha
-        // Filtramos por 'professor' para listar quem se cadastrou no sistema
         const query = `
             SELECT id, nome, email, tipo, aprovado 
             FROM usuarios 
@@ -108,15 +106,15 @@ router.get('/alunos', async (req, res) => {
 });
 
 router.post('/alunos', async (req, res) => {
-    const { nome, cpf, data_nascimento, telefone, plano_id } = req.body;
+    const { nome, cpf, data_nascimento, telefone, plano_id, professor_id} = req.body;
 
     try {
         const query = `
-            INSERT INTO alunos (nome, cpf, data_nascimento, telefone, plano_id) 
-            VALUES ($1, $2, $3, $4, $5) 
+            INSERT INTO alunos (nome, cpf, data_nascimento, telefone, plano_id, professor_id) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
             RETURNING *
         `;
-        const values = [nome, cpf, data_nascimento, telefone, plano_id];
+        const values = [nome, cpf, data_nascimento, telefone, plano_id, professor_id];
 
         const resultado = await pool.query(query, values);
         res.status(201).json(resultado.rows[0]);

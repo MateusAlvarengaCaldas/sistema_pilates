@@ -1,18 +1,20 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function CadastroAluno() {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
   const [nascimento, setNascimento] = useState('');
+  
   const [plano, setPlano] = useState('');
   const [listaPlanos, setListaPlanos] = useState([]);
+  
   const [professor, setProfessor] = useState('');
-  const [listaProfessor, setProfessores] = useState([]);
+  const [listaProfessor, setProfessores] = useState([]); // Array para guardar os profs
 
-useEffect(() =>{
-async function buscarPlanos() {
+  useEffect(() => {
+    // 1. Buscar Planos
+    async function buscarPlanos() {
       try {
         const resposta = await fetch('http://localhost:3000/planos');
         const dados = await resposta.json();
@@ -21,37 +23,39 @@ async function buscarPlanos() {
         console.error("Erro ao buscar planos:", error);
       }
     }
+
+    // 2. Buscar Professores (NOVO)
     async function buscarProfessores() {
-      try{
-        const resposta = await fetch('http://localhost:3000/planos');
+      try {
+        // Usamos a rota /usuarios que criamos para listar apenas professores
+        const resposta = await fetch('http://localhost:3000/usuarios'); 
         const dados = await resposta.json();
-        setProfessores(dados)
-      } catch(error) {
+        setProfessores(dados);
+      } catch (error) {
         console.error("Erro ao buscar professores:", error);
       }
-      
     }
+
     buscarPlanos();
-    buscarProfessores();
+    buscarProfessores(); // Chamando a função
   }, []);
-  
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if(!plano){
+    if (!plano) {
       alert("Por favor, selecione um plano!");
       return;
     }
     
-
+    // Objeto pronto para enviar
     const dadosDoAluno = {
       nome,
       cpf,
       telefone,
       data_nascimento: nascimento,
       plano_id: plano,
-      professor_id: professor
+      professor_id: professor // Envia o ID do professor selecionado
     };
 
     console.log("Enviando:", dadosDoAluno);
@@ -67,16 +71,19 @@ async function buscarPlanos() {
 
       if (resposta.ok) {
         alert('✅ Aluno cadastrado com sucesso!');
+        // Limpar formulário
         setNome('');
         setCpf('');
         setTelefone('');
         setNascimento('');
+        setPlano('');
+        setProfessor('');
       } else {
-        alert('❌ Erro ao cadastrar. O servidor respondeu com erro.');
+        alert('❌ Erro ao cadastrar. Verifique o console do navegador.');
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert('❌ Erro de conexão. O Backend (porta 3000) está ligado?');
+      alert('❌ Erro de conexão.');
     }
   }
 
@@ -97,21 +104,28 @@ async function buscarPlanos() {
         <label>Data de Nascimento:</label>
         <input type="date" value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
 
+        {/* SELECT DE PLANOS */}
         <label>Plano:</label>
-        <select value={plano}onChange={(e) => setPlano(e.target.value)}style={{ padding: '8px'}}>
-        <option value="">Selecione um plano...</option>
-        {listaPlanos?.length > 0 && listaPlanos.map((item) => (
-          <option key={item.id} value={item.id}>
-            {item.nome} - R$ {item.valor_mensal}
-          </option>
-        ))}
+        <select value={plano} onChange={(e) => setPlano(e.target.value)} style={{ padding: '8px' }}>
+          <option value="">Selecione um plano...</option>
+          {listaPlanos?.length > 0 && listaPlanos.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.nome} - R$ {item.valor_mensal}
+            </option>
+          ))}
         </select>
 
+        {/* SELECT DE PROFESSORES (CORRIGIDO) */}
         <label>Professor:</label>
-        <select value={professor}onChange={(e) => setProfessor(e.target)}style={{padding: '8px'}}>
-          <option value="">Selecio um professor...</option>
+        <select 
+            value={professor} 
+            onChange={(e) => setProfessor(e.target.value)} // Correção: e.target.value
+            style={{ padding: '8px' }}
+        >
+          <option value="">Selecione um professor...</option>
           {listaProfessor?.length > 0 && listaProfessor.map((prof) => (
             <option key={prof.id} value={prof.id}>
+                {prof.nome}
             </option>
           ))}
         </select>
