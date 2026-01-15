@@ -1,103 +1,186 @@
-/* Container principal (Fundo cinza e centralizado) */
-.login-container {
+/* Reset básico */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+/* Layout de Tela Dividida */
+.main-split-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Lado Esquerdo - Branding (Marca) */
+.brand-section {
+    flex: 1; /* Ocupa 50% */
+    background: linear-gradient(135deg, #00a896 0%, #028090 100%); /* Degradê moderno Teal */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f0f2f5;
-    font-family: Arial, sans-serif;
-}
-
-/* O cartão branco */
-.login-card {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 300px;
-}
-
-/* Título */
-.login-title {
-    text-align: center;
-    margin-bottom: 20px;
-    color: black;
-}
-
-/* Formulário */
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Labels (Textos acima dos inputs) */
-.input-label {
-    color: black;
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
-}
-
-/* Inputs (Caixas de texto) */
-.input-field {
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white; /* Garante fundo branco */
-    color: black;            /* Garante texto preto */
-    font-size: 14px;
-}
-
-/* Botão de Enviar (Base) */
-.btn-submit {
-    padding: 10px;
     color: white;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.brand-title {
+    font-size: 2.5rem;
+    margin: 20px 0 10px 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-tagline {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Lado Direito - Formulário */
+.form-section {
+    flex: 1.2; /* Um pouco mais largo que a marca */
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.login-card-modern {
+    background: white;
+    padding: 50px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 450px;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+.form-header h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+.form-header p {
+    color: #777;
+    font-size: 0.95rem;
+}
+
+/* Inputs Interativos */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.modern-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.modern-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Efeito de foco no input */
+.modern-input:focus {
+    outline: none;
+    border-color: #00a896;
+    box-shadow: 0 0 0 4px rgba(0, 168, 150, 0.1);
+}
+
+/* Botões Modernos */
+.modern-button {
+    width: 100%;
+    padding: 15px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 10px;
+    font-size: 1.1rem;
     font-weight: bold;
-    transition: background 0.3s;
-    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Variação Azul (Cadastro) */
-.btn-submit.azul {
-    background-color: #007bff;
-}
-.btn-submit.azul:hover {
-    background-color: #0056b3;
+.modern-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
-/* Variação Verde (Login) */
-.btn-submit.verde {
-    background-color: #28a745;
-}
-.btn-submit.verde:hover {
-    background-color: #218838;
+.modern-button:active {
+    transform: translateY(0);
 }
 
-/* Linha divisória */
-.divider {
-    margin: 20px 0;
-    border: 0;
-    border-top: 1px solid #ddd;
+/* Cores dos estados */
+.btn-azul { background: linear-gradient(to right, #00a896, #028090); }
+.btn-verde { background: linear-gradient(to right, #28a745, #218838); }
+
+/* Botão desabilitado (loading) */
+.modern-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-/* Botão de alternar (Link no rodapé) */
-.btn-toggle {
+/* Toggle Link */
+.toggle-container {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+.btn-toggle-modern {
     background: none;
     border: none;
-    color: #007bff;
+    color: #00a896;
+    font-weight: 600;
     cursor: pointer;
-    width: 100%;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+.btn-toggle-modern:hover {
+    color: #028090;
     text-decoration: underline;
-    font-size: 14px;
 }
 
-.btn-toggle:hover {
-    color: #0056b3;
+/* Responsividade para Celulares */
+@media (max-width: 768px) {
+    .main-split-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    .brand-section {
+        flex: none;
+        padding: 30px 20px;
+    }
+    .brand-title { font-size: 1.8rem; }
+    .brand-tagline { display: none; }
+    
+    .form-section {
+        flex: none;
+        padding: 20px;
+    }
+    .login-card-modern {
+        padding: 30px 20px;
+        box-shadow: none;
+        background: transparent;
+    }
 }

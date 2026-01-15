@@ -1,0 +1,156 @@
+/* Reset básico */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+/* Layout Dividido */
+.main-split-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* --- LADO ESQUERDO (Marca) --- */
+.brand-section {
+    flex: 1;
+    background: linear-gradient(135deg, #00a896 0%, #028090 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.brand-title {
+    font-size: 2.2rem;
+    margin: 20px 0 10px 0;
+    font-weight: 700;
+}
+.brand-tagline {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* --- LADO DIREITO (Formulário) --- */
+.form-section {
+    flex: 1.5; /* Lado do form maior aqui pois tem mais campos */
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    overflow-y: auto; /* Permite rolar se a tela for pequena */
+}
+
+.card-modern {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 600px; /* Mais largo que o login */
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.form-header h2 {
+    color: #333;
+    margin-bottom: 5px;
+}
+.form-header p {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+/* Inputs e Selects */
+.input-group {
+    margin-bottom: 15px;
+}
+
+/* NOVA CLASSE: Linha com 2 colunas */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row .input-group {
+    flex: 1; /* Cada um ocupa metade */
+}
+
+.modern-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.modern-input, .modern-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Estilo específico para Select */
+.modern-select {
+    cursor: pointer;
+    background-color: #fff;
+    height: 48px; /* Altura fixa para alinhar com inputs */
+}
+
+.modern-input:focus, .modern-select:focus {
+    outline: none;
+    border-color: #00a896;
+    box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.1);
+}
+
+/* Botão Salvar */
+.btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #00a896, #028090);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.btn-save:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-split-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .form-row {
+        flex-direction: column; /* No celular fica um embaixo do outro */
+        gap: 0;
+    }
+    .brand-section { padding: 20px; }
+    .card-modern { padding: 20px; box-shadow: none; }
+}
