@@ -1,0 +1,79 @@
+.lista-container {
+    width: 100%;
+    overflow-x: auto; /* Permite rolagem horizontal se a tabela for grande */
+}
+
+.lista-vazia {
+    text-align: center;
+    color: #888;
+    margin-top: 20px;
+}
+
+.tabela-alunos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden; /* Para arredondar as bordas da tabela */
+}
+
+.tabela-alunos thead {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.tabela-alunos th {
+    text-align: left;
+    padding: 16px;
+    color: #444;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabela-alunos td {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.tabela-alunos tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-alunos tr:hover {
+    background-color: #f1fcfc; /* Um azul bem clarinho ao passar o mouse */
+}
+
+/* Detalhes visuais */
+.cpf-mini {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.badge-plano {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.Status-ativo {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.Status-inativo {
+    /* background-color: #f8d7da; Fundo Vermelho claro */
+    color: #721c24;            /* Texto Vermelho escuro */
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}

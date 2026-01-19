@@ -1,30 +1,28 @@
 import { useState } from 'react';
-import CadastroAluno from './CadastroAluno';
 import Login from './Login';
+import Dashboard from './Dashboard';
 
 function App() {
-  // 1. Estado que guarda se o usuário está logado ou não
-  // null = ninguém logado
-  // "email@..." = usuário logado
-  const [usuario, setUsuario] = useState(null);
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-  // 2. O IF (O Segurança)
-  // Se NÃO tiver usuário (null), mostra a tela de Login
-  if (!usuario) {
-    return <Login onLogin={(emailDigitado) => setUsuario(emailDigitado)} />;
-  }
+  // Função chamada quando o login dá certo (recebe o email)
+  const handleLoginSucesso = (email) => {
+    setUsuarioLogado(email);
+  };
 
-  // 3. Se tiver usuário, mostra o Sistema Principal (Cadastro)
+  // Função para deslogar
+  const handleLogout = () => {
+    setUsuarioLogado(null);
+  };
+
   return (
     <div>
-      <div style={{ background: '#eee', padding: '10px', display: 'flex', justifyContent: 'space-between' }}>
-        <span>Olá, <strong>{usuario}</strong></span>
-        <button onClick={() => setUsuario(null)} style={{ cursor: 'pointer' }}>Sair</button>
-      </div>
-
-      <h1 style={{ textAlign: 'center' }}>Sistema de Pilates</h1>
-      <hr />
-      <CadastroAluno />
+      {/* Lógica Simples: Tem usuário? Mostra Dashboard. Não tem? Mostra Login */}
+      {usuarioLogado ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : (
+        <Login onLogin={handleLoginSucesso} />
+      )}
     </div>
   );
 }

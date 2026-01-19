@@ -95,9 +95,23 @@ router.get('/usuarios', async (req, res) => {
 // =========================================
 // ROTAS DE ALUNOS
 // =========================================
+// =========================================
+// ROTAS DE ALUNOS (CORRIGIDA)
+// =========================================
 router.get('/alunos', async (req, res) => {
     try {
-        const resultado = await pool.query("SELECT * FROM alunos ORDER BY nome");
+        const query = `
+            SELECT 
+                alunos.*, 
+                usuarios.nome AS nome_professor, 
+                planos.nome AS nome_plano
+            FROM alunos
+            LEFT JOIN usuarios ON alunos.professor_id = usuarios.id
+            LEFT JOIN planos ON alunos.plano_id = planos.id
+            ORDER BY alunos.nome ASC
+        `;
+
+        const resultado = await pool.query(query);
         res.json(resultado.rows);
     } catch (error) {
         console.error("Erro ao buscar alunos:", error);

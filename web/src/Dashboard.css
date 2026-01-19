@@ -1,0 +1,118 @@
+/* --- RESET OBRIGATÓRIO (O Segredo está aqui) --- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Trava a rolagem da janela inteira */
+}
+
+/* Container Principal */
+.dashboard-container {
+    display: flex;
+    height: 100vh;      /* Força exatos 100% da altura da tela */
+    width: 100vw;       /* Força exatos 100% da largura */
+    background-color: #f4f6f8;
+    overflow: hidden;   /* Garante que nada saia daqui */
+}
+
+/* --- BARRA LATERAL (SIDEBAR) --- */
+.sidebar {
+    width: 260px;
+    height: 100%;      /* Preenche 100% do pai (dashboard-container) */
+    background: linear-gradient(180deg, #00a896 0%, #028090 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    z-index: 10;
+    flex-shrink: 0;    /* Impede que o menu encolha */
+    overflow: hidden;  /* Corta qualquer excesso */
+}
+
+/* Cabeçalho da Sidebar */
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    flex-shrink: 0; /* O logo nunca encolhe */
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+/* Menu de Navegação */
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;          /* Diminuí o espaço para caber melhor */
+    flex: 1;           /* Ocupa todo o espaço disponível */
+    overflow-y: auto;  /* Permite rolar SÓ se for extremamente necessário */
+    
+    /* Esconde barra de rolagem visualmente (mas mantém funcionalidade) */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+.sidebar-menu::-webkit-scrollbar { display: none; }
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.95rem; /* Fonte levemente menor */
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.menu-btn:hover, .menu-btn.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    padding-left: 18px;
+}
+
+/* Botão de Sair */
+.btn-logout {
+    margin-top: 10px; 
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #ffcccc;
+    flex-shrink: 0; /* Garante que o botão de sair sempre apareça */
+}
+.btn-logout:hover {
+    background-color: rgba(200, 50, 50, 0.8);
+    color: white;
+}
+
+/* --- ÁREA DE CONTEÚDO PRINCIPAL --- */
+.content-area {
+    flex: 1;
+    padding: 40px;
+    height: 100%;       /* Altura total */
+    overflow-y: auto;   /* SÓ o conteúdo branco rola, o menu fica parado */
+}
+
+/* Boas Vindas */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #8898aa;
+    text-align: center;
+}
+.welcome-screen h1 { font-size: 2.5rem; color: #333; margin-bottom: 10px; }
