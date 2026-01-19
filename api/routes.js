@@ -93,9 +93,6 @@ router.get('/usuarios', async (req, res) => {
 });
 
 // =========================================
-// ROTAS DE ALUNOS
-// =========================================
-// =========================================
 // ROTAS DE ALUNOS (CORRIGIDA)
 // =========================================
 router.get('/alunos', async (req, res) => {
@@ -152,9 +149,11 @@ router.get('/planos', async (req, res) => {
     }
 });
 
+// =========================================
+// ROTA DE REGISTRO (Planos)
+// =========================================
 router.post('/planos', async(req, res) =>{
-    // Padronizei a variável para qtde_aulas_semana (comum em Pilates: 1x, 2x, 3x na semana)
-    // O campo 'ativo' agora vem do body ou assume true por padrão se não vier
+
     const { nome, valor_mensal, qtde_aulas_semana, ativo } = req.body;
     
     // Se 'ativo' não for enviado, define como true
@@ -176,5 +175,18 @@ router.post('/planos', async(req, res) =>{
         res.status(500).json({erro: 'Erro ao tentar criar novo plano!'})
     }
 });
+
+// =========================================
+// ROTA DE Atualização de alunos (Ativar/ inativar)
+// =========================================
+
+router.post('/alunos/:id/:status', async(req, res) => {
+    const {id} = req.params;
+    const {status} = req.body;
+
+    try{
+        const query = `UPDATE alunos set alunos.Status = False`
+    }
+})
 
 module.exports = router;

@@ -29,7 +29,7 @@ function Dashboard({ onLogout }) {
                         <div style={{ opacity: 0.2, transform: 'scale(1.5)', marginBottom: '20px' }}>
                             <LogoPilates /> 
                         </div>
-                        <h1>Bem-vindo ao Studio Flow</h1>
+                        <h1>Bem-vindo ao Studio </h1>
                         <p>Selecione uma opção no menu lateral para começar.</p>
                     </div>
                 );
