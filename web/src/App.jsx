@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Login from './Login';
-import Dashboard from './Dashboard';
+import Login from './pages/Login/Login';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App() {
   const [usuarioLogado, setUsuarioLogado] = useState(null);

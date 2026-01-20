@@ -180,13 +180,13 @@ router.post('/planos', async(req, res) =>{
 // ROTA DE Atualização de alunos (Ativar/ inativar)
 // =========================================
 
-router.post('/alunos/:id/:status', async(req, res) => {
-    const {id} = req.params;
-    const {status} = req.body;
+// router.post('/alunos/:id/:status', async(req, res) => {
+//     const {id} = req.params;
+//     const {status} = req.body;
 
-    try{
-        const query = `UPDATE alunos set alunos.Status = False`
-    }
-})
+//     try{
+//         const query = `UPDATE alunos set alunos.Status = False`
+//     }
+// })
 
 module.exports = router;

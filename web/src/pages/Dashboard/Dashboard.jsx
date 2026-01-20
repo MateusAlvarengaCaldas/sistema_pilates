@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './Dashboard.css';
-import LogoPilates from './LogoPilates'; // Reutilizando sua logo
+import LogoPilates from '../../components/LogoPilates'; // Reutilizando sua logo
 
 // Importe suas telas aqui
-import GerenciarAlunos from './GerenciarAlunos';
+import GerenciarAlunos from '../Alunos/GerenciarAlunos';
 // import CadastroPlanos from './CadastroPlanos'; (Exemplo futuro)
 
 function Dashboard({ onLogout }) {

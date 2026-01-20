@@ -1,6 +1,6 @@
 import { useState } from "react";
 import './Login.css';        // <--- Importa o estilo
-import LogoPilates from './LogoPilates'; // <--- Importa o componente Logo
+import LogoPilates from '../../components/LogoPilates'; // <--- Importa o componente Logo
 
 function Login({ onLogin }) {
     const [isCadastro, setIsCadastro] = useState(false);
