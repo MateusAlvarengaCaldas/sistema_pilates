@@ -180,13 +180,22 @@ router.post('/planos', async(req, res) =>{
 // ROTA DE Atualização de alunos (Ativar/ inativar)
 // =========================================
 
-// router.post('/alunos/:id/:status', async(req, res) => {
-//     const {id} = req.params;
-//     const {status} = req.body;
+router.put('/alunos/:id/status', async (req, res) => {
+    const { id } = req.params;   // Pega o ID da URL (ex: /alunos/5/status)
+    const { status } = req.body; // Pega o novo status (true ou false) do corpo
 
-//     try{
-//         const query = `UPDATE alunos set alunos.Status = False`
-//     }
-// })
+    try {
+        // Atualiza a coluna "Status" apenas onde o id for igual ao informado
+        // O $1 e $2 são preenchidos pelas variáveis no array logo depois
+        const query = `UPDATE alunos SET "Status" = $1 WHERE id = $2`;
+        
+        await pool.query(query, [status, id]);
+
+        res.status(200).json({ message: "Status atualizado com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao atualizar status:", error);
+        res.status(500).json({ erro: 'Erro ao atualizar status' });
+    }
+});
 
 module.exports = router;
