@@ -76,7 +76,7 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
             <div className="form-row">
                 <div className="input-group">
                     <label className="modern-label">Nascimento</label>
-                    <input type="date" className="modern-input" value={nascimento} onChange={e => setNascimento(e.target.value)} />
+                    <input type="date" className="modern-inputDate" value={nascimento} onChange={e => setNascimento(e.target.value)} />
                 </div>
                 <div className="input-group">
                     <label className="modern-label">Professor</label>

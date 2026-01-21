@@ -48,7 +48,7 @@ body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .card-modern {
-    background: rgb(232, 231, 231);
+    background: rgb(255, 254, 254);
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
@@ -90,6 +90,39 @@ body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-weight: 600;
     font-size: 0.85rem;
 }
+
+.modern-input, .modern-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.modern-inputDate, .modern-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+
+}
+
+.modern-inputDate::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* Remove qualquer filtro de cor e volta para o PRETO padrão */
+    filter: invert(1);
+    
+    /* Se quiser garantir que ele fique bem nítido: */
+    opacity: 10;
+}
+
 
 .modern-input, .modern-select {
     width: 100%;

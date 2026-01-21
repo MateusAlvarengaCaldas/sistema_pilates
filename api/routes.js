@@ -188,7 +188,6 @@ router.put('/alunos/:id/status', async (req, res) => {
         const query = `UPDATE alunos SET "Status" = $1 WHERE id = $2 RETURNING *`;
         
         const {rows} = await pool.query(query, [status, id]);
-
         res.status(200).json(rows[0]);
     } catch (error) {
         console.error("Erro ao atualizar status:", error);

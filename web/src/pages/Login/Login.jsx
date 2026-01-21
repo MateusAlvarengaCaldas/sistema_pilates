@@ -112,7 +112,7 @@ function Login({ onLogin }) {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`modern-button ${isCadastro ? 'btn-azul' : 'btn-verde'}`}
+                            className={`modern-button ${isCadastro ? 'btn-verde' : 'btn-azul'}`}
                         >
                             {loading ? "Processando..." : (isCadastro ? "SOLICITAR ACESSO" : "ENTRAR NO SISTEMA")}
                         </button>

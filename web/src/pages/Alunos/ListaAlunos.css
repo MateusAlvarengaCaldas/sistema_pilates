@@ -72,8 +72,7 @@
 .Status-inativo {
     /* background-color: #f8d7da; Fundo Vermelho claro */
     color: #721c24;            /* Texto Vermelho escuro */
-    padding: 5px 10px;
     border-radius: 15px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: bold;
 }

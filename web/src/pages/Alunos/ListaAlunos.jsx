@@ -7,6 +7,10 @@ function ListaAlunos() {
 
 
     async function alternarStatus(id, statusAtual) {
+        const confirmar = confirm("Tem certeza que deseja alterar o status do aluno?");
+        if(!confirmar){
+            return;
+        }
         const novoStatus = !statusAtual; 
 
         try {
@@ -17,12 +21,13 @@ function ListaAlunos() {
             });
 
             if (resposta.ok) {
-
+                console.log("Status atualizado!")
                 const alunoAtualizado = await resposta.json();
                 
                 setAlunos(listaAtual => listaAtual.map(aluno => 
                 aluno.id === id ? { ...aluno, ...alunoAtualizado } : aluno
                 ));
+                alert("✅ Status do aluno atualizado com sucesso!");
             } else {
                 alert("Erro ao atualizar status");
             }
@@ -68,7 +73,7 @@ function ListaAlunos() {
                                 
                                 
                                 <td style={{ cursor: 'pointer' }} onClick={() => alternarStatus(aluno.id, (aluno.status || aluno.Status))}>
-                                    <span className={(aluno.status || aluno.Status) ? "status-ativo" : "status-inativo"}>
+                                    <span className={(aluno.status || aluno.Status) ? "Status-ativo" : "Status-inativo"}>
                                         {(aluno.status || aluno.Status) ? "Ativo" : "Inativo"}
                                     </span>
                                     <div style={{ fontSize: '10px', color: '#ccc', marginTop: '2px' }}>
