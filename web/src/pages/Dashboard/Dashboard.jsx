@@ -3,7 +3,7 @@ import './Dashboard.css';
 import LogoPilates from '../../components/LogoPilates'; // Reutilizando sua logo
 
 // Importe suas telas aqui
-import GerenciarAlunos from '../Alunos/GerenciarAlunos';
+import GerenciarAlunos from '../Alunos/GerenciarPlanos';
 // import CadastroPlanos from './CadastroPlanos'; (Exemplo futuro)
 
 function Dashboard({ onLogout }) {
@@ -16,7 +16,7 @@ function Dashboard({ onLogout }) {
             case 'alunos':
                 return <GerenciarAlunos />; 
             case 'planos':
-                return <div style={{padding: 20}}><h2>Tela de Planos (Em breve...)</h2></div>;
+                return <GerenciarPlanos />;
             case 'turmas':
                 return <div style={{padding: 20}}><h2>Gestão de Turmas (Em breve...)</h2></div>;
             case 'financeiro':
