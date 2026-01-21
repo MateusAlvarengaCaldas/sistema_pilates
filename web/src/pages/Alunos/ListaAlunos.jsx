@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './ListaAlunos.css';
 
 function ListaAlunos() {
-    //O useState cria as variáveis AQUI dentro
+    
     const [alunos, setAlunos] = useState([]);
 
 

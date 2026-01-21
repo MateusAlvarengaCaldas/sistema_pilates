@@ -32,7 +32,7 @@ O projeto segue uma arquitetura modular, separando responsabilidades entre Clien
 * **Fetch API:** Camada de serviço para comunicação assíncrona com o Backend.
 
 ### Back-end
-* **Node.js & Express:** API RESTful robusta e escalável.
+* **Node.js & Express:** API RESTful.
 * **PostgreSQL:** Banco de dados relacional.
 * **node-postgres (pg):** Driver de conexão otimizado.
 * **Middleware Personalizado:** Logs de requisições e tratamento de erros.

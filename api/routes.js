@@ -160,7 +160,6 @@ router.post('/planos', async(req, res) =>{
     const statusAtivo = (ativo !== undefined) ? ativo : true;
 
     try{
-        // CORRIGIDO: Adicionado parêntese que faltava antes do VALUES
         const query = `
             INSERT INTO planos (nome, valor_mensal, qtde_aulas_semana, ativo) 
             VALUES ($1, $2, $3, $4) 
@@ -184,9 +183,8 @@ router.put('/alunos/:id/status', async (req, res) => {
     const { id } = req.params;   // Pega o ID da URL (ex: /alunos/5/status)
     const { status } = req.body; // Pega o novo status (true ou false) do corpo
 
-    try {
-        // Atualiza a coluna "Status" apenas onde o id for igual ao informado
-        // O $1 e $2 são preenchidos pelas variáveis no array logo depois
+    try
+     {
         const query = `UPDATE alunos SET "Status" = $1 WHERE id = $2 RETURNING *`;
         
         const {rows} = await pool.query(query, [status, id]);

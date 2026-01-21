@@ -42,7 +42,6 @@ function Dashboard({ onLogout }) {
             {/* --- BARRA LATERAL --- */}
             <aside className="sidebar">
                 <div className="sidebar-header">
-                    {/* Diminuí um pouco a logo para caber na barra */}
                     <div style={{ transform: 'scale(0.8)' }}>
                         <LogoPilates />
                     </div>

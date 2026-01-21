@@ -52,7 +52,7 @@ html, body, #root {
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 5px;          /* Diminuí o espaço para caber melhor */
+    gap: 5px;          
     flex: 1;           /* Ocupa todo o espaço disponível */
     overflow-y: auto;  /* Permite rolar SÓ se for extremamente necessário */
     
