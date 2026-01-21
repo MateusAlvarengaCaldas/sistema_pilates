@@ -64,7 +64,7 @@ function ListaAlunos() {
                                 </td>
                                 <td>{aluno.nome_professor || '-'}</td>
                                 
-                                {/* A chamada da função agora vai funcionar */}
+                                
                                 <td style={{ cursor: 'pointer' }} onClick={() => alternarStatus(aluno.id, (aluno.status || aluno.Status))}>
                                     <span className={(aluno.status || aluno.Status) ? "status-ativo" : "status-inativo"}>
                                         {(aluno.status || aluno.Status) ? "Ativo" : "Inativo"}
