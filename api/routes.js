@@ -16,12 +16,12 @@ router.post('/login', async (req, res) => {
     const { email, senha } = req.body;
 
     try {
-        // Busca o usuário pelo email (aqui precisamos da senha para conferir)
+        // Busca o usuário pelo email 
         const query = 'SELECT * FROM usuarios WHERE email = $1';
         const resultado = await pool.query(query, [email]);
         const usuario = resultado.rows[0];
 
-        // 1. Verifica se o usuário existe e se a senha bate
+        // 1. Verifica se o usuário existe
         if (!usuario || usuario.senha !== senha) {
             return res.status(401).json({ erro: 'Email ou senha incorretos' });
         }
@@ -121,11 +121,11 @@ router.post('/alunos', async (req, res) => {
 
     try {
         const query = `
-            INSERT INTO alunos (nome, cpf, data_nascimento, telefone, plano_id, professor_id) 
-            VALUES ($1, $2, $3, $4, $5, $6) 
+            INSERT INTO alunos (nome, cpf, data_nascimento, telefone, plano_id, professor_id, "Status") 
+            VALUES ($1, $2, $3, $4, $5, $6, $7) 
             RETURNING *
         `;
-        const values = [nome, cpf, data_nascimento, telefone, plano_id, professor_id];
+        const values = [nome, cpf, data_nascimento, telefone, plano_id, professor_id, true];
 
         const resultado = await pool.query(query, values);
         res.status(201).json(resultado.rows[0]);
@@ -187,11 +187,11 @@ router.put('/alunos/:id/status', async (req, res) => {
     try {
         // Atualiza a coluna "Status" apenas onde o id for igual ao informado
         // O $1 e $2 são preenchidos pelas variáveis no array logo depois
-        const query = `UPDATE alunos SET "Status" = $1 WHERE id = $2`;
+        const query = `UPDATE alunos SET "Status" = $1 WHERE id = $2 RETURNING *`;
         
-        await pool.query(query, [status, id]);
+        const {rows} = await pool.query(query, [status, id]);
 
-        res.status(200).json({ message: "Status atualizado com sucesso!" });
+        res.status(200).json(rows[0]);
     } catch (error) {
         console.error("Erro ao atualizar status:", error);
         res.status(500).json({ erro: 'Erro ao atualizar status' });
