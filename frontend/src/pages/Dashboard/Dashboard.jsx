@@ -2,9 +2,9 @@ import { useState } from 'react';
 import './Dashboard.css';
 import LogoPilates from '../../components/LogoPilates'; // Reutilizando sua logo
 
-// Importe suas telas aqui
-import GerenciarAlunos from '../Alunos/GerenciarPlanos';
-// import CadastroPlanos from './CadastroPlanos'; (Exemplo futuro)
+// // Importe suas telas aqui
+// import GerenciarAlunos from '../Planos/GerenciarPlanos';
+// // import CadastroPlanos from './CadastroPlanos'; (Exemplo futuro)
 
 function Dashboard({ onLogout }) {
     // Estado para controlar qual tela está visível. Começa 'home' (vazia)
