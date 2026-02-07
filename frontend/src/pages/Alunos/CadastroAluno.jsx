@@ -65,7 +65,7 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
             <div className="form-row">
                 <div className="input-group">
                     <label className="modern-label">CPF</label>
-                    <input type="text" className="modern-input" value={cpf} onChange={e => setCpf(e.target.value)} required />
+                    <input type="text" className="modern-input" value={cpf} onChange={e => setCpf(e.target.value)} required maxLength={11} />
                 </div>
                 <div className="input-group">
                     <label className="modern-label">Telefone</label>

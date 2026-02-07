@@ -1,85 +1,127 @@
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2'; // Opcional: Se já instalou o SweetAlert
-import './ListaAlunos.css'; // Pode aproveitar o mesmo CSS por enquanto
+import './ListaPlanos.css'; 
+import Swal from 'sweetalert2'; // Agora isso funciona!
 
 function ListaPlanos() {
     const [planos, setPlanos] = useState([]);
+    const [loading, setLoading] = useState(true); // Adicionei loading para não mostrar "Nenhum plano" antes da hora
 
-    // Função para inativar/ativar planos
-    async function alternarStatus(id, statusAtual) {
-        // Se quiser usar o confirm nativo simples:
-        if (!window.confirm("Deseja alterar o status deste plano?")) return;
+    // --- CARREGAMENTO INICIAL ---
+    useEffect(() => {
+        carregarPlanos();
+    }, []);
 
-        const novoStatus = !statusAtual;
+    async function carregarPlanos() {
+        const token = localStorage.getItem('token'); // 1. PEGA O TOKEN
 
         try {
-            // ATENÇÃO: Você precisa garantir que essa rota existe no backend
-            const resposta = await fetch(`http://localhost:3000/planos/${id}/status`, {
+            const res = await fetch('http://localhost:3000/planos', {
+                // 2. ENVIA O TOKEN (Sem isso, o backend devolve erro 401 ou 403)
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+
+            if(res.ok) {
+                const data = await res.json();
+                setPlanos(data);
+            } else {
+                console.error("Erro ao buscar planos");
+            }
+        } catch (err) {
+            console.error("Erro de conexão:", err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // --- ALTERAR STATUS ---
+    async function alternarStatus(id, statusAtual) {
+
+        const resultado = await Swal.fire({
+            title: 'Tem certeza?',
+            text: "Você deseja alterar o status deste plano?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, alterar!',
+            cancelButtonText: 'Cancelar'
+        });
+        if (!resultado.isConfirmed) return;
+
+        const novoStatus = !statusAtual;
+        const token = localStorage.getItem('token'); // Token aqui também
+
+        try {
+            // Essa rota bate com a que criamos no backend: router.put('/:id/ativo')
+            const resposta = await fetch(`http://localhost:3000/planos/${id}/ativo`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ ativo: novoStatus })
             });
 
             if (resposta.ok) {
-                // Atualiza a lista na tela
-                setPlanos(listaAtual => listaAtual.map(plano => 
+                // Atualiza visualmente
+                setPlanos(listaAtual => listaAtual.map(plano =>
                     plano.id === id ? { ...plano, ativo: novoStatus } : plano
                 ));
+                Swal.fire(
+                    'Atualizado!',
+                    'O status do plano foi alterado.',
+                    'success'
+                );
             } else {
-                alert("Erro ao atualizar plano");
+                Swal.fire("Erro ao atualizar plano");
             }
         } catch (error) {
             console.error("Erro:", error);
+            Swal.fire("Erro:", error);
         }
     }
 
-    useEffect(() => {
-        fetch('http://localhost:3000/planos')
-            .then(res => res.json())
-            .then(data => setPlanos(data))
-            .catch(err => console.error("Erro:", err));
-    }, []);
-
     return (
         <div className="lista-container">
-            {/* CORREÇÃO 1: Mudei de alunos.length para planos.length */}
-            {planos.length === 0 ? (
-                <p className="lista-vazia">Nenhum plano cadastrado.</p>
+            {loading ? (
+                <p>Carregando planos...</p>
+            ) : planos.length === 0 ? (
+                <div className="lista-vazia">
+                    <p>Nenhum plano cadastrado.</p>
+                </div>
             ) : (
-                <table className="tabela-alunos">
+                <table className="tabela-alunos"> {/* Pode manter essa classe se importou o CSS */}
                     <thead>
                         <tr>
                             <th>Nome do Plano</th>
                             <th>Valor Mensal</th>
                             <th>Aulas/Semana</th>
-                            <th>Status</th>
+                            <th style={{textAlign: 'center'}}>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {/* CORREÇÃO 2: Mudei para planos.map */}
                         {planos.map((plano) => (
                             <tr key={plano.id}>
                                 <td>
                                     <strong>{plano.nome}</strong>
                                 </td>
                                 
-                                {/* Formatação de Dinheiro */}
-                                <td>
-                                    R$ {Number(plano.valor_mensal).toFixed(2).replace('.', ',')}
+                                <td style={{ color: '#2e7d32', fontWeight: 'bold' }}>
+                                    {/* Formatação segura para evitar erro se valor vier nulo */}
+                                    R$ {Number(plano.valor_mensal || 0).toFixed(2).replace('.', ',')}
                                 </td>
                                 
                                 <td style={{ textAlign: 'center' }}>
                                     {plano.qtde_aulas_semana}
                                 </td>
 
-                                {/* Lógica de Status */}
-                                <td style={{ cursor: 'pointer' }} onClick={() => alternarStatus(plano.id, plano.ativo)}>
+                                <td style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => alternarStatus(plano.id, plano.ativo)}>
+                                    {/* DICA: Verifique se no CSS as classes são "status-ativo" (minúsculo)
+                                        ou "Status-ativo" (maiúsculo igual Alunos). Ajustei para minúsculo aqui.
+                                    */}
                                     <span className={plano.ativo ? "status-ativo" : "status-inativo"}>
                                         {plano.ativo ? "Ativo" : "Inativo"}
                                     </span>
-                                    <div style={{ fontSize: '10px', color: '#ccc', marginTop: '2px' }}>
-                                        (Clique para alterar)
-                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -35,4 +35,19 @@ router.post('/', async(req, res) => {
     }
 });
 
+router.put('/:id/ativo', async(req, res)=>{
+    const {id} = req.params;
+    const {ativo} = req.body;
+
+    try{
+        const query = `UPDATE planos SET "ativo" = $1 WHERE id = $2 RETURNING*`;
+        const {rows} = await pool.query(query, [ativo, id]);
+
+        res.status(200).json(rows[0]);
+    } catch(error){
+        console.error("Erro ao atualizar o Status", error);
+        res.status(500).json({erro: 'Erro ao atualizar o status.'})
+    }
+});
+
 module.exports = router;

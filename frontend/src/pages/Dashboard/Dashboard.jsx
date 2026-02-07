@@ -1,35 +1,40 @@
 import { useState } from 'react';
 import './Dashboard.css';
-import LogoPilates from '../../components/LogoPilates'; // Reutilizando sua logo
+import LogoPilates from '../../components/LogoPilates';
+import GerenciarPlanos from '../ListaPlanos/GerenciarPlanos';
 
-// // Importe suas telas aqui
-// import GerenciarAlunos from '../Planos/GerenciarPlanos';
-// // import CadastroPlanos from './CadastroPlanos'; (Exemplo futuro)
+// --- IMPORTANTE: Importar o arquivo que criamos/arrumamos ---
+import ListaAlunos from '../Alunos/ListaAlunos'; // <--- Ajuste o caminho se necessário!
+// import GerenciarPlanos from '../Planos/GerenciarPlanos'; // Descomente quando criar essa tela
+import GerenciarAlunos from '../Alunos/GerenciarAlunos';
 
 function Dashboard({ onLogout }) {
-    // Estado para controlar qual tela está visível. Começa 'home' (vazia)
     const [paginaAtual, setPaginaAtual] = useState('home');
 
-    // Função que decide o que renderizar na direita
     const renderizarConteudo = () => {
         switch (paginaAtual) {
             case 'alunos':
+                // Aqui chamamos o componente que importamos lá em cima
                 return <GerenciarAlunos />; 
+            
             case 'planos':
+                // return <GerenciarPlanos />; // Ainda não temos essa, deixe comentado ou faça uma div temporária
                 return <GerenciarPlanos />;
+            
             case 'turmas':
                 return <div style={{padding: 20}}><h2>Gestão de Turmas (Em breve...)</h2></div>;
+            
             case 'financeiro':
                  return <div style={{padding: 20}}><h2>Financeiro (Em breve...)</h2></div>;
+            
             case 'home':
             default:
                 return (
                     <div className="welcome-screen">
-                        {/* Versão cinza da logo para o fundo */}
                         <div style={{ opacity: 0.2, transform: 'scale(1.5)', marginBottom: '20px' }}>
                             <LogoPilates /> 
                         </div>
-                        <h1>Bem-vindo ao Studio </h1>
+                        <h1>Bem-vindo ao Studio</h1>
                         <p>Selecione uma opção no menu lateral para começar.</p>
                     </div>
                 );
@@ -74,7 +79,7 @@ function Dashboard({ onLogout }) {
                         className={`menu-btn ${paginaAtual === 'turmas' ? 'active' : ''}`}
                         onClick={() => setPaginaAtual('turmas')}
                     >
-                        📅 Agenda / Turmas
+                        📅 Agenda
                     </button>
 
                      <button 
@@ -86,7 +91,7 @@ function Dashboard({ onLogout }) {
                 </nav>
 
                 <button className="menu-btn btn-logout" onClick={onLogout}>
-                    🚪 Sair do Sistema
+                    🚪 Sair
                 </button>
             </aside>
 

@@ -63,15 +63,6 @@
     font-weight: 600;
 }
 
-.badge-professor {
-    /* background-color: #e3f2fd; */
-    color: #0d0d0d;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
 .Status-ativo {
     color: #28a745;
     font-weight: bold;

@@ -10,6 +10,7 @@ router.get('/', async (req, res) => {
                 alunos.*, 
                 usuarios.nome AS nome_professor, 
                 planos.nome AS nome_plano
+                
             FROM alunos
             LEFT JOIN usuarios ON alunos.professor_id = usuarios.id
             LEFT JOIN planos ON alunos.plano_id = planos.id
@@ -22,6 +23,7 @@ router.get('/', async (req, res) => {
         res.status(500).json({ erro: 'Erro ao buscar alunos' });
     }
 });
+
 
 // CADASTRAR ALUNO (POST /)
 router.post('/', async (req, res) => {

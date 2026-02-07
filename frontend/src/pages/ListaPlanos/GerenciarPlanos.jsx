@@ -1,19 +1,17 @@
 import { useState } from 'react';
-// import CadastroAluno from './CadastroAluno';
-import ListaAlunos from './ListaPlanos';
+import CadastroPlano from './CadastroPlano'; // Vamos garantir que esse arquivo existe
+import ListaPlanos from './ListaPlanos';     // O arquivo que já temos (com ajustes)
 
-function GerenciarAlunos() {
-    // Estado para controlar a aba ativa: 'lista' ou 'cadastro'
+function GerenciarPlanos() {
     const [abaAtiva, setAbaAtiva] = useState('lista');
 
     return (
         <div style={{ padding: '20px' }}>
             
-            {/* Cabeçalho com Título e Botões de Aba */}
+            {/* Cabeçalho igual ao de Alunos */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2 style={{ margin: 0, color: '#333' }}>Gestão de Alunos</h2>
+                <h2 style={{ margin: 0, color: '#333' }}>Gestão de Planos</h2>
                 
-                {/* Botões das Abas */}
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button 
                         onClick={() => setAbaAtiva('lista')}
@@ -27,7 +25,7 @@ function GerenciarAlunos() {
                             fontWeight: 'bold'
                         }}
                     >
-                        📋 Lista de Alunos
+                        📋 Lista de Planos
                     </button>
                     <button 
                         onClick={() => setAbaAtiva('cadastro')}
@@ -41,18 +39,17 @@ function GerenciarAlunos() {
                             fontWeight: 'bold'
                         }}
                     >
-                        ➕ Novo Aluno
+                        ➕ Novo Plano
                     </button>
                 </div>
             </div>
 
-            {/* Área de Conteúdo (Card Branco) */}
+            {/* Área de Conteúdo */}
             <div style={{ background: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {abaAtiva === 'lista' ? (
-                    <ListaAlunos />
+                    <ListaPlanos />
                 ) : (
-                    // Passamos uma função para quando salvar, voltar para a lista automaticamente
-                    <CadastroAluno aoSalvar={() => setAbaAtiva('lista')} />
+                    <CadastroPlano aoSalvar={() => setAbaAtiva('lista')} />
                 )}
             </div>
 
@@ -60,4 +57,4 @@ function GerenciarAlunos() {
     );
 }
 
-export default GerenciarAlunos;
+export default GerenciarPlanos;

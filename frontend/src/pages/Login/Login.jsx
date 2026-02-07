@@ -1,44 +1,59 @@
 import { useState } from "react";
-import './Login.css';        // <--- Importa o estilo
-import LogoPilates from '../../components/LogoPilates'; // <--- Importa o componente Logo
+import { useNavigate } from 'react-router-dom'; // <--- IMPORTANTE: Navegação
+import './Login.css';
+import LogoPilates from '../../components/LogoPilates';
 
-function Login({ onLogin }) {
+function Login() {
     const [isCadastro, setIsCadastro] = useState(false);
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    const navigate = useNavigate(); // <--- Hook para mudar de tela
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         
-        // Pequeno delay para efeito visual
+        // Pequeno delay para efeito visual (Opcional)
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const endpoint = isCadastro ? '/registrar' : '/login';
+        
+        // Ajuste: O backend espera { nome, email, senha } no cadastro
+        // e { email, senha } no login.
         const dadosParaEnviar = isCadastro ? { nome, email, senha } : { email, senha };
 
         try {
-            const resposta = await fetch(`http://127.0.0.1:3000${endpoint}`, {
+            // Use localhost para garantir compatibilidade com o backend
+            const resposta = await fetch(`http://localhost:3000${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-type': 'application/json' },
                 body: JSON.stringify(dadosParaEnviar)
             });
+            
             const dados = await resposta.json();
 
             if (resposta.ok) {
                 if (isCadastro) {
-                    alert("✨ Cadastro realizado com sucesso! Aguarde a aprovação do estúdio.");
-                    setIsCadastro(false);
-                    setNome(''); setSenha('');
+                    alert("✨ Cadastro realizado com sucesso! Faça login para entrar.");
+                    setIsCadastro(false); // Volta para a tela de login
+                    setSenha(''); // Limpa a senha por segurança
                 } else {
-                    onLogin(dados.usuario.email);
+                    // --- AQUI ESTÁ A MÁGICA QUE FALTAVA ---
+                    // 1. Salva o Token (O Crachá)
+                    localStorage.setItem('token', dados.token); 
+                    localStorage.setItem('usuario', JSON.stringify(dados.usuario));
+                    
+                    // 2. Redireciona para o Painel
+                    navigate('/dashboard'); 
                 }
             } else {
-                alert(`⚠️ ${dados.erro}`);
+                alert(`⚠️ ${dados.erro || "Erro ao processar solicitação."}`);
             }
         } catch (error) {
+            console.error(error);
             alert("❌ Erro de conexão com o servidor.");
         } finally {
             setLoading(false);
@@ -50,8 +65,10 @@ function Login({ onLogin }) {
             
             {/* --- LADO ESQUERDO: LOGO E MARCA --- */}
             <div className="brand-section">
-                <LogoPilates />
-                <h1 className="brand-title">Studio Pilates </h1>
+                <div style={{ transform: 'scale(1.5)', marginBottom: '20px' }}>
+                    <LogoPilates />
+                </div>
+                <h1 className="brand-title">Studio Pilates</h1>
                 <p className="brand-tagline">Equilíbrio entre corpo e mente.</p>
             </div>
 
@@ -66,6 +83,7 @@ function Login({ onLogin }) {
 
                     <form onSubmit={handleSubmit}>
                         
+                        {/* Animação do campo Nome */}
                         <div style={{ 
                             maxHeight: isCadastro ? '100px' : '0', 
                             opacity: isCadastro ? 1 : 0, 
@@ -114,7 +132,7 @@ function Login({ onLogin }) {
                             disabled={loading}
                             className={`modern-button ${isCadastro ? 'btn-verde' : 'btn-azul'}`}
                         >
-                            {loading ? "Processando..." : (isCadastro ? "SOLICITAR ACESSO" : "ENTRAR NO SISTEMA")}
+                            {loading ? "Processando..." : (isCadastro ? "CRIAR CONTA" : "ENTRAR NO SISTEMA")}
                         </button>
 
                     </form>
