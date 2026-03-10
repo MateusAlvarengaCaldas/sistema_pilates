@@ -3,10 +3,65 @@
     overflow-x: auto; /* Permite rolagem horizontal se a tabela for grande */
 }
 
-.lista-vazia {
-    text-align: center;
-    color: #888;
-    margin-top: 20px;
+/* Container que alinha o Título e a Busca */
+.header-page {
+    display: flex;
+    justify-content: space-between; /* Título na esquerda, Busca na direita */
+    color: #0d0d0d;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Uma linha sutil separando o topo */
+}
+
+/* O Container do Input (necessário para posicionar a lupa) */
+.search-box {
+    position: relative; /* Importante para a lupa ficar absoluta aqui dentro */
+    width: 300px;       /* Largura fixa ou pode usar max-width */
+}
+
+/* O Ícone de Lupa (🔍) */
+.search-icon {
+    position: absolute;
+    left: 12px;         /* Distância da esquerda */
+    top: 50%;           /* Meio vertical */
+    transform: translateY(-50%); /* Centraliza exato */
+    color: #999;        /* Cor cinza suave */
+    font-size: 1.1rem;
+    pointer-events: none; /* Permite clicar "através" do ícone */
+}
+
+/* O Campo de Input em si */
+.pesquisa-alunos {
+    width: 100%;
+    height: 40px;
+    padding: 10px 15px 10px 40px; /* Padding-left de 40px para o texto não ficar em cima da lupa */
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Bordas arredondadas modernas */
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Efeito ao clicar/focar no campo */
+.pesquisa-alunos:focus {
+    border-color: #28a745; /* A cor verde do seu tema */
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1); /* Um brilho verde bem suave */
+}
+
+/* Responsividade para celular */
+@media (max-width: 600px) {
+    .header-page {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .search-box {
+        width: 100%; /* No celular ocupa a largura toda */
+    }
 }
 
 .tabela-alunos {

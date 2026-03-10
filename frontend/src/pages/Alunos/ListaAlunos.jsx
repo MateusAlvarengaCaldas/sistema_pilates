@@ -1,78 +1,108 @@
 import { useEffect, useState } from 'react';
+import { useFiltro } from '../../hooks/useFiltro'; // Import do seu Hook
 import './ListaAlunos.css';
+import Swal from 'sweetalert2';
 
 function ListaAlunos() {
     
     const [alunos, setAlunos] = useState([]);
 
-    // Função para mudar o status (Ativo/Inativo)
+    
+
+    // 1. CORREÇÃO: O nome correto é 'termoBusca' (igual tá no arquivo useFiltro.js)
+    const { termoBusca, setTermoBusca, itensFiltrados } = useFiltro(alunos, ['nome', 'email']);
+
+    // Função para mudar o status
     async function alternarStatus(id, statusAtual) {
-        const confirmar = confirm("Tem certeza que deseja alterar o status do aluno?");
-        if(!confirmar){
-            return;
-        }
+
+        const resultado = await Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você deseja alterar o status deste aluno?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, alterar!',
+                    cancelButtonText: 'Cancelar'
+                });
+        // Dica: Use o Swal aqui depois se quiser, por enquanto mantive o native confirm
+        
+        if(!resultado.isConfirmed) return;
         
         const novoStatus = !statusAtual; 
-        const token = localStorage.getItem('token'); // <--- PEGA O TOKEN
+        const token = localStorage.getItem('token'); 
 
         try {
             const resposta = await fetch(`http://localhost:3000/alunos/${id}/status`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // <--- ENVIA O CRACHÁ
+                    'Authorization': `Bearer ${token}` 
                 },
                 body: JSON.stringify({ status: novoStatus })
             });
 
             if (resposta.ok) {
-                const alunoAtualizado = await resposta.json();
-                
-                // Atualiza a lista visualmente sem precisar recarregar
+                // Atualiza a lista visualmente
                 setAlunos(listaAtual => listaAtual.map(aluno => 
                     aluno.id === id ? { ...aluno, Status: novoStatus } : aluno
                 ));
-                alert("✅ Status atualizado com sucesso!");
+                Swal.fire('Atualizado!', 'Status alterado com sucesso.', 'success');
             } else {
-                alert("Erro ao atualizar status. Verifique se você está logado.");
+                Swal.fire('Erro!', 'Erro ao atualizar plano.', 'error');
             }
         } catch (error) {
             console.error("Erro:", error);
+            Swal.fire('Erro!', 'Erro de conexão.', 'error');
         }
     }
 
-    // Carregar a lista ao abrir a página
+    // Carregar a lista inicial
     useEffect(() => {
-        const token = localStorage.getItem('token'); // <--- PEGA O TOKEN
+        const token = localStorage.getItem('token'); 
 
         if (!token) {
-            alert("Você precisa fazer login!");
-            window.location.href = '/'; // Manda pro login se não tiver token
+            Swal.fire("Você precisa fazer login!");
+            window.location.href = '/'; 
             return;
         }
 
         fetch('http://localhost:3000/alunos', {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}` // <--- O PULO DO GATO
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         })
-        .then(res => {
-            if (!res.ok) throw new Error('Falha ao buscar dados');
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log("Alunos carregados:", data); // Debug para ver se veio
             setAlunos(data);
         })
         .catch(err => console.error("Erro ao carregar alunos:", err));
     }, []);
+    
 
     return (
         <div className="lista-container">
-            <h2>Meus Alunos</h2>
-            {alunos.length === 0 ? (
-                <p className="lista-vazia">Nenhum aluno encontrado.</p>
+            <div className="header-page" color='black'>
+                <h2>Gerenciar Alunos</h2>
+                
+                {/* 2. CAMPO DE BUSCA */}
+                <div className="search-box">
+                    <span className="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por nome ou email..." 
+                        className='pesquisa-alunos'
+                        value={termoBusca} 
+                        onChange={(e) => setTermoBusca(e.target.value)} 
+                    />
+                </div>
+            </div>
+
+            {/* 3. TABELA (USANDO A LISTA FILTRADA) */}
+            {itensFiltrados.length === 0 ? (
+                <div className="lista-vazia">
+                    {/* Se tiver busca digitada, avisa que não achou nada */}
+                    {termoBusca ? <p>Nenhum aluno encontrado para "{termoBusca}"</p> : <p>Carregando ou nenhum aluno cadastrado.</p>}
+                </div>
             ) : (
                 <table className="tabela-alunos">
                     <thead>
@@ -85,7 +115,8 @@ function ListaAlunos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {alunos.map((aluno) => (
+                        {/* 4. O PULO DO GATO: Map em 'itensFiltrados', NÃO em 'alunos' */}
+                        {itensFiltrados.map((aluno) => (
                             <tr key={aluno.id}>
                                 <td>
                                     <strong>{aluno.nome}</strong><br />
@@ -93,21 +124,16 @@ function ListaAlunos() {
                                 </td>
                                 <td>{aluno.telefone}</td>
                                 <td>
-                                    {/* Ajuste aqui dependendo de como o backend manda o nome do plano */}
-                                    <span className="badge-plano">{aluno.nome_plano || aluno.plano_id || '-'}</span>
+                                    <span className="badge-plano">{aluno.nome_plano || '-'}</span>
                                 </td>
                                 <td>
-                                    <span className="badge-professor">Prof.: {aluno.nome_professor || '-'}</span>
+                                    <span className="badge-professor">{aluno.nome_professor || '-'}</span>
                                 </td>
                                 
                                 <td style={{ cursor: 'pointer' }} onClick={() => alternarStatus(aluno.id, aluno.Status)}>
-                                    {/* O backend geralmente retorna 'ativo' (true/false) e não 'status' */}
                                     <span className={aluno.Status ? "Status-ativo" : "Status-inativo"}>
                                         {aluno.Status ? "Ativo" : "Inativo"}
                                     </span>
-                                    <div style={{ fontSize: '10px', color: '#ccc', marginTop: '2px' }}>
-                                        (Clique para alterar)
-                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -1,33 +1,48 @@
 import { useState } from "react";
 import './ListaPlanos.css';
+import Swal from "sweetalert2";
 
 function CadastroPlano({ aoSalvar }) {
-    // Estados do formulário
     const [nome, setNome] = useState('');
     const [valor_mensal, setValorMensal] = useState('');
     const [qtde_aulas_semana, setQtdeAulasSemana] = useState('');
-    const [loading, setLoading] = useState(false); // Faltava declarar isso
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
 
+        // 1. VALIDAÇÃO PRIMEIRO (Antes de perguntar qualquer coisa)
         if (!nome || !valor_mensal || !qtde_aulas_semana) {
-            alert("Preencha todos os campos!");
+            Swal.fire('Atenção', 'Preencha todos os campos!', 'warning');
             return;
         }
 
-        setLoading(true);
+        // 2. AGORA SIM, PERGUNTA SE QUER SALVAR
+        const resultado = await Swal.fire({
+            title: 'Salvar Novo Plano?',
+            text: `Confirmar criação do plano "${nome}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, salvar',
+            cancelButtonText: 'Cancelar'
+        });
 
-        // Pega o token para ter permissão
+        // 3. SE CLICOU EM CANCELAR, PARA TUDO
+        if (!resultado.isConfirmed) return;
+
+        setLoading(true);
         const token = localStorage.getItem('token');
 
-        // Monta o objeto igual ao que o Backend espera
-        // Converto para Number para garantir que não vá como texto
+        // Tratamento para aceitar "150,00" (com vírgula)
+        const valorFormatado = valor_mensal.toString().replace(',', '.');
+
         const dados = { 
             nome, 
-            valor_mensal: parseFloat(valor_mensal), 
+            valor_mensal: parseFloat(valorFormatado), 
             qtde_aulas_semana: parseInt(qtde_aulas_semana),
-            ativo: true // Criamos o plano como ativo por padrão
+            ativo: true 
         };
 
         try {
@@ -35,22 +50,23 @@ function CadastroPlano({ aoSalvar }) {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // <--- Importante!
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(dados)
             });
 
             if (resp.ok) {
-                alert('✅ Plano cadastrado com sucesso!');
-                // Chama a função que o pai passou para voltar para a lista
-                if (aoSalvar) aoSalvar(); 
+                // 4. CORREÇÃO DO ERRO FATAL: Chama Swal.fire de novo
+                await Swal.fire('Sucesso!', 'Plano cadastrado corretamente.', 'success');
+                
+                if (aoSalvar) aoSalvar(); // Volta para a lista
             } else {
                 const erro = await resp.json();
-                alert('Erro ao cadastrar: ' + (erro.message || 'Tente novamente.'));
+                Swal.fire('Erro', erro.message || 'Erro ao cadastrar', 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('Erro de conexão com o servidor.');
+            Swal.fire('Erro', 'Falha na conexão com o servidor.', 'error');
         } finally {
             setLoading(false);
         }
@@ -78,7 +94,7 @@ function CadastroPlano({ aoSalvar }) {
                         <label className="modern-label">Valor Mensal (R$)</label>
                         <input 
                             type="number" 
-                            step="0.01" // Permite centavos
+                            step="0.01" 
                             className="modern-input" 
                             placeholder="0.00"
                             value={valor_mensal} 

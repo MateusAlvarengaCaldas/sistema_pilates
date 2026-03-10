@@ -1,0 +1,371 @@
+/* =========================================
+   LAYOUT PRINCIPAL
+========================================= */
+
+/* =========================================
+   SUPORTE AO MODO ESCURO (DARK MODE)
+========================================= */
+@media (prefers-color-scheme: dark) {
+  /* Fundo principal da tela */
+  .agenda-container { background-color: #111827; }
+  .agenda-grid { background-color: #030712; }
+  
+  /* Cabeçalho */
+  .agenda-header { background-color: #1f2937; border-color: #374151; }
+  .header-title h2 { color: #f3f4f6; }
+  .header-badge { background-color: #374151; color: #d1d5db; }
+  
+  /* Botões de navegação */
+  .nav-controls { background-color: #374151; border-color: #4b5563; }
+  .nav-btn { color: #9ca3af; }
+  .nav-btn:hover { background-color: #4b5563; color: #ffffff; }
+  .nav-btn-today { color: #d1d5db; }
+  .nav-btn-today:hover { color: #ffffff; }
+
+  /* Colunas dos dias */
+  .day-column { border-color: #1f2937; }
+  .day-header { background-color: #111827; border-color: #1f2937; }
+  .day-header.today { background-color: #1e3a8a; } /* Fundo azul escuro para Hoje */
+  .day-name { color: #9ca3af; }
+  .day-date { color: #f3f4f6; }
+  .day-header.today .day-name, .day-header.today .day-date { color: #60a5fa; }
+
+  /* Cards de Aula */
+  .class-card { 
+    background-color: #1f2937; 
+    border-top-color: #374151; 
+    border-right-color: #374151; 
+    border-bottom-color: #374151; 
+  }
+  .class-card.status-concluido { background-color: #064e3b; border-left-color: #10b981; }
+  .class-card.status-cancelado { background-color: #7f1d1d; border-left-color: #ef4444; }
+  
+  /* Textos dentro do Card */
+  .time-badge { background-color: #374151; color: #d1d5db; }
+  .student-info h4 { color: #f3f4f6; }
+  .avatar-circle { background-color: #374151; color: #d1d5db; }
+
+  /* Botão fantasma de adicionar aula */
+  .btn-ghost-add { border-color: #374151; color: #6b7280; }
+  .btn-ghost-add:hover { border-color: #3b82f6; background-color: #1e3a8a; color: #60a5fa; }
+
+  /* =========================================
+     MODAL DE CADASTRAR AULA NO MODO ESCURO
+  ========================================= */
+  .modal-content { background-color: #1f2937; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
+  .modal-header h2 { color: #f3f4f6; }
+  .form-group label { color: #d1d5db; }
+  .form-input { 
+    background-color: #374151; 
+    border-color: #4b5563; 
+    color: #f3f4f6; 
+  }
+  /* Muda a cor do texto padrão nos selects para não ficar preto invisível */
+  select.form-input option {
+    background-color: #1f2937;
+    color: #f3f4f6;
+  }
+}
+.agenda-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ocupa 100% da altura da tela */
+  background-color: #f8f9fa; /* Fundo cinza bem claro */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* =========================================
+   CABEÇALHO (HEADER)
+========================================= */
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.header-badge {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+/* Controles de Navegação (< Hoje >) */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  color: #4b5563;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  color: #111827;
+}
+
+.nav-btn-today {
+  border: none;
+  background: none;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-btn-today:hover {
+  color: #000000;
+}
+
+/* Botão Principal (Nova Aula) */
+.btn-primary {
+  background-color: #2563eb; /* Azul forte */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   CORPO DA AGENDA (GRID DE COLUNAS)
+========================================= */
+.agenda-grid {
+  flex: 1;
+  overflow-x: auto; /* Permite rolar para o lado no celular */
+  display: flex;
+  background-color: #f9fafb;
+}
+
+.agenda-content-wrapper {
+  display: flex;
+  height: 100%;
+  min-width: 900px; /* Impede que as colunas fiquem esmagadas */
+  width: 100%;
+}
+
+/* Cada coluna de um dia */
+.day-column {
+  flex: 1;
+  min-width: 140px;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho do Dia (ex: Segunda 15/02) */
+.day-header {
+  padding: 1rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+.day-header.today {
+  background-color: #eff6ff; /* Fundo azul clarinho se for o dia de hoje */
+}
+
+.day-name {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0 0 0.25rem 0;
+}
+
+.day-date {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+}
+
+.day-header.today .day-name,
+.day-header.today .day-date {
+  color: #2563eb; /* Texto azul se for hoje */
+}
+
+/* Container onde ficam os cards das aulas */
+.cards-container {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Espaço entre uma aula e outra */
+}
+
+/* =========================================
+   CARDS DE AULA
+========================================= */
+.class-card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid #3b82f6; /* Borda azul padrão (pendente) */
+  border-top: 1px solid #f3f4f6;
+  border-right: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.class-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Variações de Cores pelo Status */
+.class-card.status-concluido {
+  border-left-color: #10b981; /* Verde */
+  background-color: #f0fdf4;
+}
+
+.class-card.status-cancelado {
+  border-left-color: #ef4444; /* Vermelho */
+  background-color: #fef2f2;
+  opacity: 0.75; /* Fica um pouco transparente */
+}
+
+/* Parte de cima do Card (Horário e Ícone) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.time-badge {
+  background-color: #f3f4f6;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4b5563;
+}
+
+/* Parte de baixo do Card (Foto e Nome do Aluno) */
+.card-body {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.student-info {
+  overflow: hidden;
+}
+
+.student-info h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Coloca '...' se o nome for muito grande */
+}
+
+.student-info p {
+  margin: 2px 0 0 0;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+/* =========================================
+   BOTÃO FANTASMA (Adicionar Aula no Espaço Vazio)
+========================================= */
+.btn-ghost-add {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0; /* Começa invisível para não poluir a tela */
+  transition: all 0.2s;
+  margin-top: auto; /* Empurra pro final da lista se tiver poucas aulas */
+}
+
+/* O botão aparece se passar o mouse na coluna do dia ou em cima dele */
+.day-column:hover .btn-ghost-add,
+.btn-ghost-add:hover {
+  opacity: 1;
+}
+
+.btn-ghost-add:hover {
+  border-color: #60a5fa;
+  color: #2563eb;
+  background-color: #070707;
+}

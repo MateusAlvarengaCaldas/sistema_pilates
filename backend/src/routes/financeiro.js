@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Certifique-se que o caminho para seu banco está certo
+const pool = require('../db'); 
 
 // =========================================================================
-// ROTA 1: PREVISÃO EM TEMPO REAL
-// O professor olha isso durante o mês para saber quanto ganharia HOJE.
-// Baseado nos alunos ativos no momento.
+// ROTA 1: PREVISÃO EM TEMPO REAL (DINÂMICA)
+// Agora busca a porcentagem exata na tabela 'usuarios'
 // =========================================================================
 router.get('/previsao/:professor_id', async (req, res) => {
     const { professor_id } = req.params;
@@ -15,9 +14,11 @@ router.get('/previsao/:professor_id', async (req, res) => {
             `SELECT 
                 COUNT(*) as total_alunos,
                 COALESCE(SUM(p.preco), 0) as faturamento_bruto,
-                COALESCE(SUM(p.preco * 0.30), 0) as comissao_prevista
+                -- Cálculo dinâmico: Preço * (Comissão do Usuário / 100)
+                COALESCE(SUM(p.preco * (u.comissao / 100.0)), 0) as comissao_prevista
              FROM alunos a
              JOIN planos p ON a.plano_id = p.id
+             JOIN usuarios u ON a.professor_id = u.id -- JOIN adicionado aqui
              WHERE a.professor_id = $1 
              AND a.ativo = TRUE`, 
             [professor_id]
@@ -33,14 +34,13 @@ router.get('/previsao/:professor_id', async (req, res) => {
 
 // =========================================================================
 // ROTA 2: FECHAR O MÊS (SNAPSHOT)
-// Tira uma "foto" dos valores atuais e grava no histórico.
-// Bloqueia se já existir um fechamento ATIVO para aquele mês.
+// Grava o valor calculado com a comissão QUE O USUÁRIO TEM HOJE.
 // =========================================================================
 router.post('/fechar-mes', async (req, res) => {
     const { professor_id, mes, ano } = req.body;
 
     try {
-        // 1. Verificação de Segurança: Já existe fechamento ATIVO (não cancelado)?
+        // 1. Verificação de Segurança (Igual ao anterior)
         const check = await pool.query(
             `SELECT * FROM pagamentos_historico 
              WHERE professor_id = $1 AND mes = $2 AND ano = $3 
@@ -52,26 +52,26 @@ router.post('/fechar-mes', async (req, res) => {
             return res.status(400).json({ erro: "Este mês já está fechado!" });
         }
 
-        // 2. Calcula os valores COM BASE NOS ALUNOS DE HOJE
+        // 2. Calcula os valores COM A COMISSÃO DINÂMICA
         const calculo = await pool.query(
             `SELECT 
                 COUNT(*) as qtd, 
                 COALESCE(SUM(p.preco), 0) as bruto, 
-                COALESCE(SUM(p.preco * 0.30), 0) as liquido
+                COALESCE(SUM(p.preco * (u.comissao / 100.0)), 0) as liquido
              FROM alunos a 
              JOIN planos p ON a.plano_id = p.id
+             JOIN usuarios u ON a.professor_id = u.id -- JOIN adicionado aqui
              WHERE a.professor_id = $1 AND a.ativo = TRUE`,
             [professor_id]
         );
 
         const d = calculo.rows[0];
 
-        // Se não tiver alunos ou valor zerado, não fecha (Regra opcional)
         if (!d.qtd || d.qtd == 0) {
             return res.status(400).json({ erro: "Professor não tem alunos ativos para fechar." });
         }
 
-        // 3. Salva na tabela definitiva
+        // 3. Salva na tabela definitiva (Sem alterações aqui, pois recebe o valor pronto)
         const salvamento = await pool.query(
             `INSERT INTO pagamentos_historico 
              (professor_id, mes, ano, qtd_alunos, total_bruto, valor_pago)
@@ -91,9 +91,7 @@ router.post('/fechar-mes', async (req, res) => {
 });
 
 // =========================================================================
-// ROTA 3: REABRIR MÊS (SOFT DELETE)
-// Não apaga o registro, apenas marca como cancelado.
-// Permite que o mês seja fechado novamente depois.
+// ROTA 3: REABRIR MÊS (SOFT DELETE) - Sem alterações
 // =========================================================================
 router.put('/reabrir-mes', async (req, res) => {
     const { professor_id, mes, ano } = req.body;
@@ -103,7 +101,7 @@ router.put('/reabrir-mes', async (req, res) => {
             `UPDATE pagamentos_historico 
              SET data_cancelamento = CURRENT_TIMESTAMP 
              WHERE professor_id = $1 AND mes = $2 AND ano = $3 
-             AND data_cancelamento IS NULL`, // Só cancela se estiver ativo
+             AND data_cancelamento IS NULL`,
             [professor_id, mes, ano]
         );
 
@@ -120,11 +118,9 @@ router.put('/reabrir-mes', async (req, res) => {
 });
 
 // =========================================================================
-// ROTA 4: EXTRATO (RELATÓRIO)
-// Lista apenas os pagamentos fechados e VÁLIDOS (ignora os cancelados).
+// ROTA 4: EXTRATO (RELATÓRIO) - Sem alterações
 // =========================================================================
 router.get('/extrato', async (req, res) => {
-    // Recebe query params: ?professor_id=1&inicio=2026-01-01&fim=2026-12-31
     const { professor_id, inicio, fim } = req.query;
 
     try {
@@ -135,12 +131,11 @@ router.get('/extrato', async (req, res) => {
              FROM pagamentos_historico
              WHERE professor_id = $1 
              AND make_date(ano, mes, 1) BETWEEN $2::date AND $3::date
-             AND data_cancelamento IS NULL -- <--- IMPORTANTE: Ignora os reabertos
+             AND data_cancelamento IS NULL
              ORDER BY ano DESC, mes DESC`,
             [professor_id, inicio, fim]
         );
 
-        // Calcula o total do período solicitado no Javascript
         let totalPeriodo = 0;
         extrato.rows.forEach(r => totalPeriodo += parseFloat(r.valor_pago));
 

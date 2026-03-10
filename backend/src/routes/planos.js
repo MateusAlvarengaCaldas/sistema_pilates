@@ -5,7 +5,7 @@ const pool = require('../db'); // Importa a conexão
 // LISTAR PLANOS (GET /)
 router.get('/', async (req, res) => {
     try {
-        const resultado = await pool.query('SELECT * FROM planos WHERE ativo = true ORDER BY valor_mensal ASC');
+        const resultado = await pool.query('SELECT * FROM planos ORDER BY valor_mensal ASC');
         res.json(resultado.rows);
     } catch (error){
         console.error("Erro ao buscar planos:", error);

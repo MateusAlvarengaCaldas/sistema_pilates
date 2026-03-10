@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Dashboard.css';
 import LogoPilates from '../../components/LogoPilates';
 import GerenciarPlanos from '../ListaPlanos/GerenciarPlanos';
+import Agenda from '../agenda/agenda';
 
 // --- IMPORTANTE: Importar o arquivo que criamos/arrumamos ---
 import ListaAlunos from '../Alunos/ListaAlunos'; // <--- Ajuste o caminho se necessário!
@@ -22,7 +23,7 @@ function Dashboard({ onLogout }) {
                 return <GerenciarPlanos />;
             
             case 'turmas':
-                return <div style={{padding: 20}}><h2>Gestão de Turmas (Em breve...)</h2></div>;
+                return <Agenda/>;
             
             case 'financeiro':
                  return <div style={{padding: 20}}><h2>Financeiro (Em breve...)</h2></div>;
