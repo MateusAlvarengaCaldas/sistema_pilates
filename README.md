@@ -5,9 +5,14 @@ Uma aplicação Full Stack desenvolvida para automatizar a gestão de alunos, or
 > 🚧 **Projeto em Desenvolvimento:** Este sistema é um laboratório de estudos práticos de Engenharia de Software.
 
 ### 📸 Demonstração
-*(![alt text](image.png))*
-![alt text](image-1.png) 
-![Tela do Sistema](link-da-sua-imagem-aqui.jpg)
+<img width="1890" height="855" alt="image" src="https://github.com/user-attachments/assets/48e0d020-9c20-4762-9f1d-7ba336659bbb" />
+
+<img width="1887" height="852" alt="image" src="https://github.com/user-attachments/assets/dbacbb31-a4a6-40ae-86ea-8bbc7c453e3d" />
+
+
+https://github.com/user-attachments/assets/8aad34a1-9a27-4a07-a26c-2ab5764f8eee
+
+
 <video controls src="AGENDA.mp4" title="Title"></video>
 
 ---
