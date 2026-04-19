@@ -68,7 +68,6 @@ router.post('/registrar', async (req, res) => {
 // =========================================
 // LISTAR PROFESSORES (Para o Select do Cadastro)
 // =========================================
-// OBS: Mantivemos '/usuarios' aqui porque no index.js vamos carregar este arquivo na raiz '/'
 router.get('/usuarios', async (req, res) => {
     try {
         const query = `

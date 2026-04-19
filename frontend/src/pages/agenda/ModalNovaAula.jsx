@@ -5,7 +5,6 @@ import './ModalNovaAula.css';
 import Swal from 'sweetalert2';
 
 const ModalNovaAula = ({ isOpen, onClose, onAulaCriada }) => {
-    // 1. Nossa memória agora guarda listas de alunos E de professores
     const [alunos, setAlunos] = useState([]);
     const [professores, setProfessores] = useState([]);
     
@@ -52,7 +51,6 @@ const ModalNovaAula = ({ isOpen, onClose, onAulaCriada }) => {
 
         if(resultado.isConfirmed){
         try {
-            // 1. Junta a data (2026-03-09) com a hora (14:00) no formato que o banco gosta
             const dataAulaFormatada = `${form.data}T${form.hora}:00`;
 
             // 2. Chama a rota EXATA do seu backend e com os nomes corretos
@@ -60,7 +58,7 @@ const ModalNovaAula = ({ isOpen, onClose, onAulaCriada }) => {
             await axios.post('http://localhost:3000/aulas/registrar-aula', {
                 professor_id: form.professor_id,
                 aluno_id: form.aluno_id,
-                data_aula: dataAulaFormatada, // Agora bate com o backend!
+                data_aula: dataAulaFormatada,
                 observacao: form.observacao
             });
             

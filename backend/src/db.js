@@ -8,7 +8,7 @@ const pool = new Pool({
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
     ssl: {
-        rejectUnauthorized: false // <--- O PULO DO GATO PARA O SUPABASE
+        rejectUnauthorized: false 
     }
 });
 

@@ -9,20 +9,20 @@ const normalizar = (texto) => {
 }
 
 /**
- * @param {array} lista - A lista completa de dados.
- * @param {array} chaves - Quais campos estao sendo filtrados, nome... email...
+ * @param {array} 
+ * @param {array} 
  */
 
 export function useFiltro(lista = [], chaves = []) {
     const [termoBusca, setTermoBusca] = useState('');
 
     const itensFiltrados = useMemo(() => {
-        if (!termoBusca) return lista; // Se não tem busca, retorna tudo
+        if (!termoBusca) return lista; 
 
         const termoNormalizado = normalizar(termoBusca);
 
         return lista.filter((item) => {
-            // Verifica se ALGUMA das chaves contém o termo
+
             return chaves.some((chave) => {
                 const valorCampo = item[chave];
                 return normalizar(valorCampo).includes(termoNormalizado);

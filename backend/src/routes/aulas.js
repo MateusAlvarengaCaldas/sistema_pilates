@@ -95,8 +95,6 @@ router.get('/agenda', async (req, res) => {
         res.json(resultado.rows);
 
     } catch(err) {
-        // ESSE LOG ABAIXO É O MAIS IMPORTANTE:
-        // Ele vai imprimir no terminal do seu VS Code o motivo exato do erro 500
         console.error("❌ ERRO NO POSTGRES:", err.message);
         
         res.status(500).json({ 
@@ -126,7 +124,6 @@ router.put('/:id/status', async (req, res) => {
             [status_presenca, id] // $1 vira o status, $2 vira o ID
         );
 
-        // 4. Se deu certo, avisamos o React devolvendo um JSON de sucesso
         res.json({ 
             mensagem: "Status atualizado com sucesso!", 
             aula: atualizacao.rows[0] 

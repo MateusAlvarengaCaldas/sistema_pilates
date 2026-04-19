@@ -4,7 +4,6 @@ const pool = require('../db');
 
 // =========================================================================
 // ROTA 1: PREVISÃO EM TEMPO REAL (DINÂMICA)
-// Agora busca a porcentagem exata na tabela 'usuarios'
 // =========================================================================
 router.get('/previsao/:professor_id', async (req, res) => {
     const { professor_id } = req.params;
