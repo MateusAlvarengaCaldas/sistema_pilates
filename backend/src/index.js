@@ -6,7 +6,7 @@ const app = express();
 const rotasAlunos = require('./routes/alunos');
 const rotasPlanos = require('./routes/planos');
 const rotasUsuarios = require('./routes/usuarios');
-
+const rotasAulas = require('./routes/aulas');
 
 app.use(express.json());
 app.use(cors());
@@ -27,6 +27,8 @@ app.use('/planos', rotasPlanos);
 
 // 3. Usuários/Auth
 app.use('/', rotasUsuarios);
+
+app.use('/aulas', rotasAulas);
 
 // Rota de teste
 app.get('/', (req, res) => {

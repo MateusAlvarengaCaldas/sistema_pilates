@@ -67,33 +67,76 @@ router.get('/historico/:aluno_id', async (req, res) => {
 // Essa é a rota que o componente React da Agenda vai chamar
 // =========================================================================
 router.get('/agenda', async (req, res) => {
-    // O frontend vai mandar: ?professor_id=1&inicio=2024-02-19&fim=2024-02-25
-    const { professor_id, inicio, fim } = req.query;
+    // Pegando as datas enviadas pelo React
+    const { inicio, fim } = req.query;
+
+    console.log(`🔎 Buscando agenda de: ${inicio} até ${fim}`);
 
     try {
         const query = `
             SELECT 
                 h.id,
-                h.data_aula, -- O Frontend precisa disso para saber em qual dia/hora plotar o card
-                h.status_presenca as status, -- Alias para bater com o frontend
+                h.data_aula, 
+                h.status_presenca as status,
                 h.observacao,
-                a.nome as aluno -- Precisamos do nome do aluno para exibir no card
+                a.nome as aluno,
+                u.nome as professor -- Nome do professor vindo da tabela usuarios
             FROM historico_aulas h
-            JOIN alunos a ON h.aluno_id = a.id -- JOIN com a tabela de alunos
-            WHERE h.professor_id = $1
-            AND h.data_aula BETWEEN $2 AND $3
+            JOIN alunos a ON h.aluno_id = a.id
+            LEFT JOIN usuarios u ON h.professor_id = u.id 
+            WHERE h.data_aula BETWEEN $1 AND $2
             ORDER BY h.data_aula ASC
         `;
 
-        const resultado = await pool.query(query, [professor_id, inicio, fim]);
+        // Executa a query passando as duas datas
+        const resultado = await pool.query(query, [inicio, fim]);
         
-        // Retorna array de aulas encontradas naquelas datas
+        console.log(`✅ Sucesso! Encontradas ${resultado.rows.length} aulas.`);
         res.json(resultado.rows);
 
     } catch(err) {
-        console.error(err);
-        res.status(500).json({ erro: "Erro ao buscar agenda semanal." });
+        // ESSE LOG ABAIXO É O MAIS IMPORTANTE:
+        // Ele vai imprimir no terminal do seu VS Code o motivo exato do erro 500
+        console.error("❌ ERRO NO POSTGRES:", err.message);
+        
+        res.status(500).json({ 
+            erro: "Erro interno no servidor ao buscar agenda.",
+            detalhes: err.message 
+        });
     }
 });
 
-module.exports = router;
+// =========================================================================
+// ROTA 4: ATUALIZAR STATUS DA AULA (Confirmar presença, Falta, etc)
+// =========================================================================
+router.put('/:id/status', async (req, res) => {
+    // 1. Pegamos o ID da aula que vem na URL (ex: /aulas/5/status)
+    const { id } = req.params; 
+    
+    // 2. Pegamos o novo status que o React enviou no corpo do pedido
+    const { status_presenca } = req.body; 
+
+    try {
+        // 3. Mandamos o PostgreSQL atualizar APENAS a linha que tem esse ID
+        const atualizacao = await pool.query(
+            `UPDATE historico_aulas 
+             SET status_presenca = $1 
+             WHERE id = $2 
+             RETURNING *`,
+            [status_presenca, id] // $1 vira o status, $2 vira o ID
+        );
+
+        // 4. Se deu certo, avisamos o React devolvendo um JSON de sucesso
+        res.json({ 
+            mensagem: "Status atualizado com sucesso!", 
+            aula: atualizacao.rows[0] 
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ erro: "Erro ao atualizar status da aula." });
+    }
+});
+
+
+module.exports = router; 

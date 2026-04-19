@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import './ModalNovaAula.css';
+import Swal from 'sweetalert2';
 
 const ModalNovaAula = ({ isOpen, onClose, onAulaCriada }) => {
     // 1. Nossa memória agora guarda listas de alunos E de professores
@@ -35,18 +36,56 @@ const ModalNovaAula = ({ isOpen, onClose, onAulaCriada }) => {
     if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+
+        e.preventDefault();
+
+        const resultado = await Swal.fire({
+            title: 'Salvar agendamento?',
+            text: `Confirmar criação desta nova aula?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, salvar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if(resultado.isConfirmed){
         try {
-            // Agora enviamos o formulário inteiro, pois ele já tem o professor_id dentro dele!
-            await axios.post('http://localhost:3000/aulas', form);
+            // 1. Junta a data (2026-03-09) com a hora (14:00) no formato que o banco gosta
+            const dataAulaFormatada = `${form.data}T${form.hora}:00`;
+
+            // 2. Chama a rota EXATA do seu backend e com os nomes corretos
             
-            alert("Aula marcada com sucesso!");
+            await axios.post('http://localhost:3000/aulas/registrar-aula', {
+                professor_id: form.professor_id,
+                aluno_id: form.aluno_id,
+                data_aula: dataAulaFormatada, // Agora bate com o backend!
+                observacao: form.observacao
+            });
+            
+            await Swal.fire('Sucesso!',
+                'Aula marcada com sucesso!',
+                'success'
+            );
+
+            setForm({
+                professor_id: '',
+                aluno_id: '',
+                data: '',
+                hora: '',
+                observacao: ''
+            });
             onAulaCriada(); 
             onClose();      
         } catch (error) {
-            alert("Erro ao marcar aula.");
+            await Swal.fire('Erro',
+                'Ocorreu um problema ao marcar a aula.',
+                'error'
+            );
             console.error(error);
         }
+    }
     };
 
     return (

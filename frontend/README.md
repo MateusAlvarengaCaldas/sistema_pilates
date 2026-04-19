@@ -1,16 +1,51 @@
-# React + Vite
+# 🧘 Sistema de Gestão - Pilates Flow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma aplicação Full Stack desenvolvida para automatizar a gestão de alunos, organizar horários e calcular comissões em estúdios de saúde e bem-estar, eliminando furos e encavalamentos na agenda.
 
-Currently, two official plugins are available:
+> 🚧 **Projeto em Desenvolvimento:** Este sistema é um laboratório de estudos práticos de Engenharia de Software.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📸 Demonstração
+*(![alt text](image.png))*
+![alt text](image-1.png) 
+![Tela do Sistema](link-da-sua-imagem-aqui.jpg)
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🧠 Arquitetura e Regra de Negócio
 
-## Expanding the ESLint configuration
+O grande diferencial deste projeto é a separação clara entre a operação diária e o fechamento financeiro, garantindo integridade dos dados:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Fluxo Operacional (`historico_aulas`):** Gerencia a agenda, horários e presença. Toda aula é criada com o status padrão de "Pendente".
+* **Fluxo Financeiro (`aulas`):** Focada no faturamento. O sistema é programado para que o cálculo de comissionamento do professor e a geração de valor só ocorram quando o status operacional da aula é atualizado para "Concluído".
+
+## 🛠️ Tecnologias Utilizadas
+
+* **Frontend:** React, Axios.
+* **Backend:** Node.js, Express.
+* **Banco de Dados:** PostgreSQL.
+
+---
+
+## 🚀 Como Rodar o Projeto Localmente
+
+**1. Clone este repositório:**
+\`\`\`bash
+git clone https://github.com/MateusAlvarengaCaldas
+\`\`\`
+
+**2. Iniciando o Backend (API):**
+\`\`\`bash
+cd backend
+npm install
+npm run dev
+\`\`\`
+
+**3. Iniciando o Frontend (Interface):**
+\`\`\`bash
+cd frontend
+npm install
+npm run dev
+\`\`\`
+
+---
+*Desenvolvido com dedicação por Mateus Alvarenga.*

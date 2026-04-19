@@ -5,6 +5,8 @@ import { ChevronLeft, ChevronRight, Plus, CheckCircle, XCircle, Clock, User } fr
 import axios from 'axios';
 import './agenda.css'; 
 import ModalNovaAula from './ModalNovaAula';
+import Swal from "sweetalert2";
+import { abrirDetalhesAula } from '../../utils/alertasAgenda';
 
 const Agenda = ({ professorId }) => {
   const [dataAtual, setDataAtual] = useState(new Date());
@@ -14,20 +16,25 @@ const Agenda = ({ professorId }) => {
   const [modalAberto, setModalAberto] = useState(false);
 
   const carregarAgenda = async () => {
+
+    
+
     setLoading(true);
     const inicioSemana = format(startOfWeek(dataAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd');
     const fimSemana = format(endOfWeek(dataAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd');
 
+
+
     try {
-      const response = await axios.get(`http://localhost:3000/agenda`, {
-        params: { professor_id: professorId, inicio: inicioSemana, fim: fimSemana }
+      const response = await axios.get(`http://localhost:3000/aulas/agenda`, {
+        params: {inicio: inicioSemana, fim: fimSemana }
       });
       setAulas(response.data);
     } catch (error) {
       console.error("Erro ao buscar agenda", error);
       setAulas([
-        { id: 1, aluno: 'João Silva', data_hora: new Date().toISOString(), status: 'pendente' },
-        { id: 2, aluno: 'Maria Souza', data_hora: addDays(new Date(), 1).toISOString(), status: 'concluido' },
+        { id: 1, aluno: 'João Silva', data_aula: new Date().toISOString(), status: 'pendente' },
+        { id: 2, aluno: 'Maria Souza', data_aula: addDays(new Date(), 1).toISOString(), status: 'concluido' },
       ]);
     } finally {
       setLoading(false);
@@ -36,7 +43,7 @@ const Agenda = ({ professorId }) => {
 
   useEffect(() => {
     carregarAgenda();
-  }, [dataAtual, professorId]);
+  }, [dataAtual]);
 
   const proximaSemana = () => setDataAtual(addWeeks(dataAtual, 1));
   const semanaAnterior = () => setDataAtual(subWeeks(dataAtual, 1));
@@ -82,11 +89,11 @@ const Agenda = ({ professorId }) => {
   };
 
   const renderizarCardsAulas = (dia) => {
-    const aulasDoDia = aulas.filter(aula => isSameDay(parseISO(aula.data_hora), dia));
-    aulasDoDia.sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
+    const aulasDoDia = aulas.filter(aula => isSameDay(parseISO(aula.data_aula), dia));
+    aulasDoDia.sort((a, b) => new Date(a.data_aula) - new Date(b.data_aula));
 
     return aulasDoDia.map(aula => {
-      const horaFormatada = format(parseISO(aula.data_hora), 'HH:mm');
+      const horaFormatada = format(parseISO(aula.data_aula), 'HH:mm');
       
       let statusClass = "";
       let IconeStatus = Clock;
@@ -105,7 +112,7 @@ const Agenda = ({ professorId }) => {
       return (
         <div 
           key={aula.id} 
-          onClick={() => alert(`Detalhes da aula de ${aula.aluno}`)}
+          onClick={() => abrirDetalhesAula(aula, carregarAgenda)}
           className={`class-card ${statusClass}`}
         >
           <div className="card-header">
