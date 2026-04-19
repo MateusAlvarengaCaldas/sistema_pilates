@@ -8,6 +8,7 @@ Uma aplicação Full Stack desenvolvida para automatizar a gestão de alunos, or
 *(![alt text](image.png))*
 ![alt text](image-1.png) 
 ![Tela do Sistema](link-da-sua-imagem-aqui.jpg)
+<video controls src="AGENDA.mp4" title="Title"></video>
 
 ---
 
