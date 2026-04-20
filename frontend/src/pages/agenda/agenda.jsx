@@ -16,7 +16,6 @@ const Agenda = ({ professorId }) => {
   const [modalAberto, setModalAberto] = useState(false);
 
   const carregarAgenda = async () => {
-
     
 
     setLoading(true);
@@ -154,7 +153,7 @@ const Agenda = ({ professorId }) => {
             <button onClick={proximaSemana} className="nav-btn"><ChevronRight size={20} /></button>
         </div>
         
-        <button className="btn-primary">
+        <button className="btn-primary" onClick={() => setModalAberto(true)}>
             <Plus size={20} /> Nova Aula
         </button>
       </div>

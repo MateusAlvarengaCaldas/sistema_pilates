@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import { parseISO, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import axios from 'axios';
 // Não precisa importar o React aqui, pois é só JavaScript puro!
 
 export const abrirDetalhesAula = async (aula, onAtualizar) => {
@@ -28,10 +29,26 @@ export const abrirDetalhesAula = async (aula, onAtualizar) => {
     });
 
     if (resultado.isConfirmed) {
-        console.log(`Confirmando presenca da aula: aluno(a) ${aula.aluno}/ Cod. ${aula.id}`);
-        // Aqui vai o código para confirmar no banco depois
+        try{
+            await axios.put(`http://localhost:3000/aulas/${aula.id}/status`, {
+                status_presenca: 'concluido'
+            })
+            await Swal.fire('Sucesso!', 'Presença confirmada no sistema.', 'success')
+            onAtualizar();
+        }catch (error){
+            await Swal.fire('Erro', 'Não foi possível confirmar a presença.', 'error');
+            console.error(error)
+        }
     } else if (resultado.isDenied) {
-        console.log(`Cancelando a aula: ${aula.aluno}/ Cod. ${aula.id}`);
-        // Aqui vai o código para cancelar no banco depois
+        try{
+        await axios.put(`http://localhost:3000/aulas/${aula.id}/status`, {
+            status_presenca: 'cancelado'
+        })
+        await Swal.fire('Cancelada', 'A aula foi marcada como cancelada.', 'info')
+        onAtualizar();
+        }  catch(error){
+            await Swal.fire('Erro', 'Não foi possível cancelar a aula.', 'error')
+            console.error(error)
+        }
     }
 };
