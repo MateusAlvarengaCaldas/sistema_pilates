@@ -12,6 +12,18 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
   const [listaPlanos, setListaPlanos] = useState([]);
   const [listaProfessor, setProfessores] = useState([]);
   const [loading, setLoading] = useState(false);
+  import Swal from "sweetalert2";
+
+          const resultado = await Swal.fire({
+              title: 'Salvar Novo Aluno?',
+              text: `Confirmar o cadastro do aluno "${aluno}"?`,
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#28a745',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Sim, salvar',
+              cancelButtonText: 'Cancelar'
+          });
 
   useEffect(() => {
     async function buscarDados() {
@@ -31,7 +43,7 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!plano || !professor) { alert("Preencha todos os campos!"); return; }
+    if (!plano || !professor) { await Swal.fire("Preencha todos os campos!"); return; }
     setLoading(true);
 
     const dados = { nome, cpf, telefone, data_nascimento: nascimento, plano_id: plano, professor_id: professor };
@@ -43,7 +55,7 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
         body: JSON.stringify(dados)
       });
       if (resp.ok) {
-        alert('✅ Aluno cadastrado!');
+        await Swal.fire('✅ Aluno cadastrado!');
         // Chama a função que o pai passou para mudar de aba
         if (aoSalvar) aoSalvar(); 
       } else {
