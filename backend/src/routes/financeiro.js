@@ -150,4 +150,56 @@ router.get('/extrato', async (req, res) => {
     }
 });
 
+// =========================================================================
+// ROTA 5: RELATÓRIO DETALHADO POR AULA (Com validação de Status)
+// =========================================================================
+
+router.get('/relatorio-financeiro', async(req, res)=> {
+    const {professor_id, data_inicio, data_fim, status} = req.query;
+
+    try{
+        let query = `SELECT
+                        a.aluno AS aluno,
+                        ha.data_aula,
+                        p.nome AS plano,
+                        ha.status_presenca AS status,
+                        u.nome AS professor,
+                        CASE
+                            WHEN ha.status_presenca = 'concluido' THEN(p.preco * u.comissao/100)
+                            ELSE 0
+                            END AS comissao
+                        FROM historico_aulas ha
+                        JOIN alunos a ON ha.aluno_id = a.aluno
+                        JOIN planos p ON ha.plano_id = p.id
+                        JOIN usuarios u ON a.professor_id = u.usuarios
+                        WHERE ha.status_presenca IN ('concluido', 'cancelado');`
+
+        const valores = [];
+        let contador = 1;
+
+        if(professor_id){
+            query += `AND professor_id = ${contador}`;
+            valores.push(data_inicio, data_fim);
+            contador++;
+
+        if(data_inicio && data_fim){
+            query += `AND ha.data_aula BETWEEN ${contador} AND ${contador+1}`;
+            valores.push(data_inicio, data_fim);
+            contador += 2
+        }
+        if(status){
+            query += `AND ha.status_presenca = ${contador}`;
+            valores.push(status);
+            contador++;
+        }
+        const resultado = await pool.query(query, valores);
+        res.json(resultado.rows);
+        }
+    } catch (err){
+        console.error(err);
+        res.status(500).json({erro: "Erro ao gerar relatorio detalhado"})
+
+    }
+})
+
 module.exports = router;
