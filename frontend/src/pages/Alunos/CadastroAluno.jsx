@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './CadastroAluno.css'; 
-
+  import Swal from "sweetalert2";
 function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra lista
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
@@ -12,18 +12,7 @@ function CadastroAluno({ aoSalvar }) { // Recebe uma função para voltar pra li
   const [listaPlanos, setListaPlanos] = useState([]);
   const [listaProfessor, setProfessores] = useState([]);
   const [loading, setLoading] = useState(false);
-  import Swal from "sweetalert2";
 
-          const resultado = await Swal.fire({
-              title: 'Salvar Novo Aluno?',
-              text: `Confirmar o cadastro do aluno "${aluno}"?`,
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonColor: '#28a745',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Sim, salvar',
-              cancelButtonText: 'Cancelar'
-          });
 
   useEffect(() => {
     async function buscarDados() {

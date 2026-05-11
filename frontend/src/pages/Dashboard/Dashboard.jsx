@@ -8,6 +8,7 @@ import Agenda from '../agenda/agenda';
 import ListaAlunos from '../Alunos/ListaAlunos'; // <--- Ajuste o caminho se necessário!
 // import GerenciarPlanos from '../Planos/GerenciarPlanos'; // Descomente quando criar essa tela
 import GerenciarAlunos from '../Alunos/GerenciarAlunos';
+import Financeiro from '../Financeiro/Financeiro';
 
 function Dashboard({ onLogout }) {
     const [paginaAtual, setPaginaAtual] = useState('home');
@@ -26,7 +27,7 @@ function Dashboard({ onLogout }) {
                 return <Agenda/>;
             
             case 'financeiro':
-                 return <div style={{padding: 20}}><h2>Financeiro (Em breve...)</h2></div>;
+                 return <Financeiro />;
             
             case 'home':
             default:

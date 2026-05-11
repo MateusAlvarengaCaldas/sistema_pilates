@@ -7,6 +7,7 @@ const rotasAlunos = require('./routes/alunos');
 const rotasPlanos = require('./routes/planos');
 const rotasUsuarios = require('./routes/usuarios');
 const rotasAulas = require('./routes/aulas');
+const rotasFinanceiro = require('./routes/financeiro');
 
 app.use(express.json());
 app.use(cors());
@@ -21,6 +22,8 @@ app.use('/planos', rotasPlanos);
 app.use('/', rotasUsuarios);
 
 app.use('/aulas', rotasAulas);
+
+app.use('/financeiro', rotasFinanceiro);
 
 // Rota de teste
 app.get('/', (req, res) => {
