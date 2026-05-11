@@ -158,48 +158,53 @@ router.get('/relatorio-financeiro', async(req, res)=> {
     const {professor_id, data_inicio, data_fim, status} = req.query;
 
     try{
+
         let query = `SELECT
-                        a.aluno AS aluno,
+                        a.nome AS aluno, -- Geralmente o nome da coluna é 'nome', não 'aluno'
                         ha.data_aula,
                         p.nome AS plano,
                         ha.status_presenca AS status,
                         u.nome AS professor,
                         CASE
-                            WHEN ha.status_presenca = 'concluido' THEN(p.preco * u.comissao/100)
+                            WHEN ha.status_presenca = 'concluido' THEN (p.valor_mensal * u.comissao/100)
                             ELSE 0
-                            END AS comissao
-                        FROM historico_aulas ha
-                        JOIN alunos a ON ha.aluno_id = a.aluno
-                        JOIN planos p ON ha.plano_id = p.id
-                        JOIN usuarios u ON a.professor_id = u.usuarios
-                        WHERE ha.status_presenca IN ('concluido', 'cancelado');`
+                        END AS comissao
+                    FROM historico_aulas ha
+                    JOIN alunos a ON ha.aluno_id = a.id
+                    JOIN planos p ON a.plano_id = p.id
+                    JOIN usuarios u ON a.professor_id = u.id
+                    WHERE ha.status_presenca IN ('concluido', 'cancelado')`;
 
         const valores = [];
         let contador = 1;
 
+        // ERRO 2: Faltava o sinal de Dólar ($) antes do contador para o PostgreSQL entender que é um parâmetro (ex: $1, $2).
         if(professor_id){
-            query += `AND professor_id = ${contador}`;
-            valores.push(data_inicio, data_fim);
+            query += ` AND a.professor_id = $${contador}`;
+            // ERRO 3: Aqui dentro você estava fazendo valores.push(data_inicio, data_fim), mas o certo é empurrar a variável do professor!
+            valores.push(professor_id); 
             contador++;
+        } // ERRO 4: Faltava fechar a chave (}) desse IF. As outras validações estavam presas dentro dele.
 
         if(data_inicio && data_fim){
-            query += `AND ha.data_aula BETWEEN ${contador} AND ${contador+1}`;
+            query += ` AND ha.data_aula BETWEEN $${contador} AND $${contador+1}`;
             valores.push(data_inicio, data_fim);
-            contador += 2
+            contador += 2;
         }
+
         if(status){
-            query += `AND ha.status_presenca = ${contador}`;
+            query += ` AND ha.status_presenca = $${contador}`;
             valores.push(status);
             contador++;
         }
+
         const resultado = await pool.query(query, valores);
         res.json(resultado.rows);
-        }
+        
     } catch (err){
         console.error(err);
-        res.status(500).json({erro: "Erro ao gerar relatorio detalhado"})
-
+        res.status(500).json({erro: "Erro ao gerar relatorio detalhado"});
     }
-})
+});
 
 module.exports = router;

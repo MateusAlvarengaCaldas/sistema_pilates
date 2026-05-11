@@ -170,3 +170,103 @@
   background-color: white;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
+
+/* =========================================
+   ESTILOS DA TABELA DE COMISSÕES
+========================================= */
+
+.tabela-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-top: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.tabela-titulo {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.tabela-responsiva {
+  overflow-x: auto; /* Evita que a tabela quebre a tela no celular */
+}
+
+.tabela-moderna {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-moderna th {
+  padding: 12px 15px;
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.tabela-moderna td {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 14px;
+}
+
+.tabela-moderna tr:hover td {
+  background-color: #f1f5f9;
+}
+
+.valor-destaque {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.tabela-rodape-texto {
+  text-align: right;
+  font-weight: bold;
+  color: #475569;
+  padding: 15px;
+}
+
+.tabela-rodape-valor {
+  font-weight: 800;
+  font-size: 16px;
+  color: #10b981;
+  padding: 15px;
+}
+
+/* --- TABELA NO MODO ESCURO --- */
+@media (prefers-color-scheme: dark) {
+  .tabela-container {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .tabela-titulo {
+    color: #f3f4f6;
+  }
+  
+  .tabela-moderna th {
+    background-color: #111827;
+    border-bottom-color: #374151;
+    color: #9ca3af;
+  }
+  
+  .tabela-moderna td {
+    border-bottom-color: #374151;
+    color: #d1d5db;
+  }
+  
+  .tabela-moderna tr:hover td {
+    background-color: #374151;
+  }
+  
+  .tabela-rodape-texto {
+    color: #f3f4f6;
+  }
+}
